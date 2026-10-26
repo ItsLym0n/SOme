@@ -1,0 +1,19 @@
+{
+	"schemaVersion": 1,
+	"id": "endernodefinder",
+	"version": "${version}",
+	"name": "Ender Node Finder",
+	"description": "Highlights ender nodes (purple terracotta) and draws a route line through them. Press N or use /endernode for settings.",
+	"authors": ["melvaro"],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": ["dev.endernode.EnderNodeFinder"]
+	},
+	"depends": {
+		"fabricloader": ">=0.18.0",
+		"minecraft": "~26.1",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
