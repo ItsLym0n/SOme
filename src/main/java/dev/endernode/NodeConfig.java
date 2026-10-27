@@ -42,6 +42,10 @@ public class NodeConfig {
 	public int range = 32;
 	/** Nodes more than this many blocks up/down from your feet get a small extra cost when picking a target. */
 	public int sameLevelRange = 2;
+	/** Nodes this close to each other count as a group (0 = off). Groups are visited first. */
+	public int groupRadius = 6;
+	/** How many nodes it takes to make a group. */
+	public int groupSize = 3;
 
 	public int boxColor() {
 		return argb(boxAlpha, boxRed, boxGreen, boxBlue);

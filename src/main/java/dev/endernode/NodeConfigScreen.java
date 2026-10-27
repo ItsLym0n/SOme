@@ -33,7 +33,7 @@ public class NodeConfigScreen extends Screen {
 	protected void init() {
 		leftX = width / 2 - COLUMN_WIDTH - GAP / 2;
 		rightX = width / 2 + GAP / 2;
-		top = Math.max(36, (height - ROW * 9 - 20) / 2 + 12);
+		top = Math.max(36, (height - ROW * 10 - 20) / 2 + 12);
 
 		// Box colors (left column)
 		int y = top;
@@ -63,6 +63,11 @@ public class NodeConfigScreen extends Screen {
 			config.throughWalls = !config.throughWalls;
 			b.setMessage(toggleLabel("Through Walls", config.throughWalls));
 		}).bounds(rightX, y, COLUMN_WIDTH, 20).build());
+
+		y += ROW;
+		addRenderableWidget(new IntSlider(leftX, y, "Group Radius", 0, 16,
+				() -> config.groupRadius, v -> config.groupRadius = v, "OFF"));
+		addRenderableWidget(new IntSlider(rightX, y, "Group Size", 2, 8, () -> config.groupSize, v -> config.groupSize = v));
 
 		y += ROW;
 		addRenderableWidget(Button.builder(toggleLabel("Enabled", config.enabled), b -> {
@@ -113,13 +118,21 @@ public class NodeConfigScreen extends Screen {
 		private final int min;
 		private final int max;
 		private final Consumer<Integer> setter;
+		/** Shown instead of the number when the slider is at its minimum (null = show the number). */
+		private final @Nullable String minLabel;
 
 		IntSlider(int x, int y, String label, int min, int max, IntSupplier getter, Consumer<Integer> setter) {
+			this(x, y, label, min, max, getter, setter, null);
+		}
+
+		IntSlider(int x, int y, String label, int min, int max, IntSupplier getter, Consumer<Integer> setter,
+				@Nullable String minLabel) {
 			super(x, y, COLUMN_WIDTH, 20, Component.empty(), (Mth.clamp(getter.getAsInt(), min, max) - min) / (double) (max - min));
 			this.label = label;
 			this.min = min;
 			this.max = max;
 			this.setter = setter;
+			this.minLabel = minLabel;
 			updateMessage();
 		}
 
@@ -129,7 +142,8 @@ public class NodeConfigScreen extends Screen {
 
 		@Override
 		protected void updateMessage() {
-			setMessage(Component.literal(label + ": " + intValue()));
+			int v = intValue();
+			setMessage(Component.literal(label + ": " + (v == min && minLabel != null ? minLabel : v)));
 		}
 
 		@Override

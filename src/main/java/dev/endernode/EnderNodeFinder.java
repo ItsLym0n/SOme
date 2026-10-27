@@ -55,6 +55,8 @@ public class EnderNodeFinder implements ClientModInitializer {
 	private static List<BlockPos> nodes = List.of();
 	private static @Nullable BlockPos target;
 	private static List<BlockPos> path = List.of();
+	/** While clearing a group, the last group node targeted; the path stays near it. */
+	private static @Nullable BlockPos groupAnchor;
 	/** Game tick when each node was first seen. */
 	private static final Map<BlockPos, Long> firstSeen = new HashMap<>();
 	private static long tickCount;
@@ -106,6 +108,7 @@ public class EnderNodeFinder implements ClientModInitializer {
 			target = null;
 			path = List.of();
 			firstSeen.clear();
+			groupAnchor = null;
 			return;
 		}
 		tickCount++;
@@ -123,11 +126,39 @@ public class EnderNodeFinder implements ClientModInitializer {
 			List<BlockPos> choices = current == null ? nodes : nodes.stream()
 					.filter(node -> node.equals(current) || tickCount - firstSeen.get(node) >= NEW_NODE_DELAY)
 					.toList();
+			if (config.groupRadius > 0) {
+				choices = preferGroups(choices);
+			}
 			PathFinder.Route route = PathFinder.findBest(client.level, feet, choices, config.sameLevelRange,
 					current, KEEP_TARGET_BONUS);
 			target = route == null ? null : route.target();
 			path = route == null ? List.of() : route.path();
+			if (config.groupRadius <= 0 || target == null) {
+				groupAnchor = null;
+			} else if (groupAnchor != null
+					|| NodeScanner.inGroups(nodes, config.groupRadius, config.groupSize).contains(target)) {
+				// Entered (or still clearing) a group: stay near the latest target
+				groupAnchor = target;
+			}
 		}
+	}
+
+	/**
+	 * Narrows the choices for group mode: while clearing a group, only nodes near the last
+	 * one; otherwise only nodes that are part of a group, if there are any.
+	 */
+	private static List<BlockPos> preferGroups(List<BlockPos> choices) {
+		if (groupAnchor != null) {
+			List<BlockPos> sameGroup = NodeScanner.near(choices, groupAnchor, config.groupRadius);
+			if (!sameGroup.isEmpty()) {
+				return sameGroup;
+			}
+			groupAnchor = null; // group cleared
+		}
+		// Count group members among all nodes, but only offer ones you're allowed to switch to
+		List<BlockPos> grouped = NodeScanner.inGroups(nodes, config.groupRadius, config.groupSize);
+		List<BlockPos> groupedChoices = choices.stream().filter(grouped::contains).toList();
+		return groupedChoices.isEmpty() ? choices : groupedChoices;
 	}
 
 	private static void onRender(LevelExtractionContext context) {

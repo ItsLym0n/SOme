@@ -66,4 +66,28 @@ public final class NodeScanner {
 		}
 		return found;
 	}
+
+	/** Nodes that have at least {@code size} nodes (counting themselves) within {@code radius} blocks. */
+	public static List<BlockPos> inGroups(List<BlockPos> nodes, int radius, int size) {
+		long radiusSq = (long) radius * radius;
+		List<BlockPos> grouped = new ArrayList<>();
+		for (BlockPos node : nodes) {
+			int count = 0;
+			for (BlockPos other : nodes) {
+				if (node.distSqr(other) <= radiusSq) {
+					count++;
+				}
+			}
+			if (count >= size) {
+				grouped.add(node);
+			}
+		}
+		return grouped;
+	}
+
+	/** Nodes within {@code radius} blocks of {@code center}. */
+	public static List<BlockPos> near(List<BlockPos> nodes, BlockPos center, int radius) {
+		long radiusSq = (long) radius * radius;
+		return nodes.stream().filter(node -> node.distSqr(center) <= radiusSq).toList();
+	}
 }
