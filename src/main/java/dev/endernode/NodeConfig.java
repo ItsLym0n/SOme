@@ -14,6 +14,11 @@ public class NodeConfig {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 	private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("endernodefinder.json");
 
+	private static final int CURRENT_VERSION = 2;
+
+	/** Bumped when defaults change, so old config files get upgraded once (0 = file predates it). */
+	public int configVersion;
+
 	public boolean enabled = true;
 	public boolean throughWalls = true;
 
@@ -31,11 +36,11 @@ public class NodeConfig {
 	public int lineGreen = 255;
 	public int lineBlue = 255;
 	public int lineAlpha = 255;
-	public float lineWidth = 3.0f;
+	public float lineWidth = 6.0f;
 
 	/** How far around you to look for nodes, in blocks. */
 	public int range = 32;
-	/** Nodes within this many blocks up/down of your feet count as "same level" and are picked first. */
+	/** Nodes more than this many blocks up/down from your feet get a small extra cost when picking a target. */
 	public int sameLevelRange = 2;
 
 	public int boxColor() {
@@ -56,18 +61,31 @@ public class NodeConfig {
 
 	public static NodeConfig load() {
 		if (Files.exists(FILE)) {
+			NodeConfig config = null;
 			try (Reader reader = Files.newBufferedReader(FILE)) {
-				NodeConfig config = GSON.fromJson(reader, NodeConfig.class);
-				if (config != null) {
-					return config;
-				}
+				config = GSON.fromJson(reader, NodeConfig.class);
 			} catch (Exception e) {
 				EnderNodeFinder.LOGGER.warn("Could not read {}, using defaults", FILE, e);
 			}
+			if (config != null) {
+				config.upgrade();
+				return config;
+			}
 		}
 		NodeConfig config = new NodeConfig();
+		config.configVersion = CURRENT_VERSION;
 		config.save();
 		return config;
+	}
+
+	private void upgrade() {
+		if (configVersion < 2) {
+			lineWidth = Math.max(lineWidth, 6.0f);
+		}
+		if (configVersion < CURRENT_VERSION) {
+			configVersion = CURRENT_VERSION;
+			save();
+		}
 	}
 
 	public void save() {

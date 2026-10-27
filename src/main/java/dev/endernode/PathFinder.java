@@ -7,9 +7,11 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -21,7 +23,13 @@ public final class PathFinder {
 	/** Stop once within this distance of the node (you can mine it from there). */
 	private static final double REACH = 3.0;
 	private static final int MAX_DROP = 3;
-	private static final int MAX_EXPANSIONS = 8000;
+	private static final int MAX_EXPANSIONS = 4000;
+	/** How many of the closest nodes get a real walking path computed when picking a target. */
+	private static final int MAX_CANDIDATES = 6;
+	/** Extra walking cost per block of height beyond the "same level" range. */
+	private static final double LEVEL_PENALTY = 2.0;
+	/** Extra cost per block still left to go when a node can't be fully reached. */
+	private static final double UNREACHED_PENALTY = 3.0;
 
 	private static final int[][] DIRECTIONS = {
 			{1, 0}, {-1, 0}, {0, 1}, {0, -1},
@@ -36,15 +44,66 @@ public final class PathFinder {
 		this.level = level;
 	}
 
-	/**
-	 * Returns the walking path (feet positions) from {@code start} towards {@code target}.
-	 * If the target can't be reached, returns the path to the closest reachable spot.
-	 */
-	public static List<BlockPos> find(Level level, BlockPos start, BlockPos target) {
-		return new PathFinder(level).search(start, target);
+	/** The node to walk to and the walking path (feet positions) towards it. */
+	public record Route(BlockPos target, List<BlockPos> path) {
 	}
 
-	private List<BlockPos> search(BlockPos start, BlockPos target) {
+	private record Search(List<BlockPos> path, double cost, double remaining) {
+	}
+
+	/**
+	 * Picks the node with the shortest walk. Nodes more than {@code sameLevelRange} blocks
+	 * above or below you cost a little extra per block, so a node on your level wins a
+	 * close race, but a node just down the stairs beats one far away on your level.
+	 * {@code keep} (the current target, may be null) gets {@code keepBonus} blocks of head
+	 * start so the path only switches when another node is clearly better.
+	 * Returns null if there are no nodes.
+	 */
+	public static @Nullable Route findBest(Level level, BlockPos start, List<BlockPos> nodes, int sameLevelRange,
+			@Nullable BlockPos keep, double keepBonus) {
+		if (nodes.isEmpty()) {
+			return null;
+		}
+		// Only path to the few closest-looking nodes
+		List<BlockPos> candidates = new ArrayList<>(nodes);
+		candidates.sort(Comparator.comparingDouble(node -> estimate(start, node, sameLevelRange)));
+		candidates = new ArrayList<>(candidates.subList(0, Math.min(MAX_CANDIDATES, candidates.size())));
+		if (keep != null) {
+			// Always path to the current target first so it's never dropped by the shortlist
+			candidates.remove(keep);
+			candidates.add(0, keep);
+		}
+
+		PathFinder finder = new PathFinder(level);
+		Route best = null;
+		double bestScore = Double.MAX_VALUE;
+		for (BlockPos node : candidates) {
+			double bonus = node.equals(keep) ? keepBonus : 0;
+			if (estimate(start, node, sameLevelRange) - bonus >= bestScore) {
+				continue; // can't beat what we already have, even walking in a straight line
+			}
+			Search search = finder.search(start, node);
+			double score = search.cost() + search.remaining() * UNREACHED_PENALTY
+					+ levelPenalty(start, node, sameLevelRange) - bonus;
+			if (score < bestScore) {
+				bestScore = score;
+				best = new Route(node, search.path());
+			}
+		}
+		return best;
+	}
+
+	/** Lowest possible score for a node: straight-line walk plus the level penalty. */
+	private static double estimate(BlockPos start, BlockPos node, int sameLevelRange) {
+		double straight = Math.sqrt(Vec3.atCenterOf(node).distanceToSqr(start.getX() + 0.5, start.getY() + 1.0, start.getZ() + 0.5));
+		return Math.max(0, straight - REACH) + levelPenalty(start, node, sameLevelRange);
+	}
+
+	private static double levelPenalty(BlockPos start, BlockPos node, int sameLevelRange) {
+		return Math.max(0, Math.abs(node.getY() - start.getY()) - sameLevelRange) * LEVEL_PENALTY;
+	}
+
+	private Search search(BlockPos start, BlockPos target) {
 		start = findGround(start);
 		Vec3 goal = Vec3.atCenterOf(target);
 
@@ -95,7 +154,7 @@ public final class PathFinder {
 			path.add(n.pos);
 		}
 		Collections.reverse(path);
-		return path;
+		return new Search(path, best.g, best.h);
 	}
 
 	/** Where you end up walking one block in direction (dx, dz) from {@code from}, or null if you can't. */

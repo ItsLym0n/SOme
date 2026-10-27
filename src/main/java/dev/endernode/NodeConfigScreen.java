@@ -53,7 +53,7 @@ public class NodeConfigScreen extends Screen {
 		addRenderableWidget(new IntSlider(rightX, y += ROW, "Line Opacity", 0, 255, () -> config.lineAlpha, v -> config.lineAlpha = v));
 		addRenderableWidget(new IntSlider(rightX, y += ROW, "Same Level ±", 0, 10,
 				() -> config.sameLevelRange, v -> config.sameLevelRange = v));
-		addRenderableWidget(new IntSlider(rightX, y += ROW, "Line Thickness", 1, 10,
+		addRenderableWidget(new IntSlider(rightX, y += ROW, "Line Thickness", 1, 20,
 				() -> Math.round(config.lineWidth), v -> config.lineWidth = v));
 
 		// General

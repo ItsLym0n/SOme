@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-/** Finds ender nodes (purple terracotta) around the player and picks which one to walk to. */
+/** Finds ender nodes (purple terracotta) around the player. */
 public final class NodeScanner {
 	private static final Predicate<BlockState> IS_NODE = state -> state.is(Blocks.PURPLE_TERRACOTTA);
 
@@ -65,28 +65,5 @@ public final class NodeScanner {
 			}
 		}
 		return found;
-	}
-
-	/**
-	 * Picks the node to walk to: the nearest one within {@code sameLevelRange} blocks
-	 * up/down of {@code feet}, or the nearest overall if none are on your level.
-	 */
-	public static BlockPos pickTarget(List<BlockPos> nodes, BlockPos feet, int sameLevelRange) {
-		BlockPos sameLevel = null;
-		BlockPos any = null;
-		double sameLevelDist = Double.MAX_VALUE;
-		double anyDist = Double.MAX_VALUE;
-		for (BlockPos node : nodes) {
-			double dist = node.distSqr(feet);
-			if (dist < anyDist) {
-				anyDist = dist;
-				any = node;
-			}
-			if (Math.abs(node.getY() - feet.getY()) <= sameLevelRange && dist < sameLevelDist) {
-				sameLevelDist = dist;
-				sameLevel = node;
-			}
-		}
-		return sameLevel != null ? sameLevel : any;
 	}
 }
