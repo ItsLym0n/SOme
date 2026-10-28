@@ -44,10 +44,6 @@ public class HuntTracker {
 	private static final int PATH_BUDGET_PER_TICK = 2500;
 	private static final int REPATH_INTERVAL_TICKS = 15;
 
-	public boolean enabled = true;
-	public Mode mode = Mode.PATH;
-	public boolean throughWalls = false;
-
 	private HuntArea area;
 	private String rarity;
 	private Entity target;
@@ -93,7 +89,7 @@ public class HuntTracker {
 	public void tick(Minecraft mc) {
 		LocalPlayer player = mc.player;
 		ClientLevel level = mc.level;
-		if (!enabled || player == null || level == null) return;
+		if (!TrevorTrackerClient.CONFIG.enabled || player == null || level == null) return;
 
 		if (target == null || target.isRemoved() || !target.isAlive()) {
 			target = null;
@@ -108,7 +104,7 @@ public class HuntTracker {
 			return;
 		}
 
-		if (mode == Mode.LINE) return;
+		if (TrevorTrackerClient.CONFIG.mode == Mode.LINE) return;
 
 		ticksSinceSearch++;
 		if (search != null) {

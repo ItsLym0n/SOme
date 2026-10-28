@@ -17,7 +17,7 @@ public final class TrackerHud {
 
 	public static void render(HuntTracker tracker, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		Minecraft mc = Minecraft.getInstance();
-		if (!tracker.enabled || mc.player == null || mc.options.hideGui) return;
+		if (!TrevorTrackerClient.CONFIG.enabled || mc.player == null || mc.options.hideGui) return;
 		if (!tracker.isActive()) return;
 
 		float partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
@@ -55,7 +55,7 @@ public final class TrackerHud {
 		Font font = mc.font;
 		int x = 4;
 		int y = 4;
-		graphics.text(font, "Trevor Tracker [" + tracker.mode + "]", x, y, 0xFFAAAAAA, true);
+		graphics.text(font, "Trevor Tracker [" + TrevorTrackerClient.CONFIG.mode + "]", x, y, 0xFFAAAAAA, true);
 		graphics.text(font, what, x, y + 11, color, true);
 		String status = arrow + " " + distance + "m " + compass + height;
 		if (tracker.getTarget() == null) status += "  - get closer to load the mob";

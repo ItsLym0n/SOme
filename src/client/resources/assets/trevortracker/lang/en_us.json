@@ -1,5 +1,6 @@
 {
 	"key.category.trevortracker.main": "Trevor Tracker",
 	"key.trevortracker.toggle": "Toggle tracker",
-	"key.trevortracker.mode": "Switch guide (path / line / both)"
+	"key.trevortracker.mode": "Switch guide (path / line / both)",
+	"key.trevortracker.settings": "Open settings"
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gizmos.GizmoProperties;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
 import net.minecraft.world.entity.Entity;
@@ -16,12 +15,9 @@ import org.joml.Vector3fc;
 /**
  * Draws the walking path, the straight tracer line and a box around the target,
  * using Minecraft's built-in gizmo line drawing. Called once per frame.
+ * Colors and thickness come from {@link TrackerConfig}.
  */
 public final class GuideRenderer {
-	private static final int PATH_START_COLOR = 0xFF00E5FF; // cyan
-	private static final int PATH_END_COLOR = 0xFF39FF14;   // green
-	private static final int LINE_COLOR = 0xFFFFD000;       // yellow
-	private static final int TARGET_COLOR = 0xFFFF3B3B;     // red
 	private static final int AREA_COLOR = 0xFFB066FF;       // purple
 
 	private GuideRenderer() {
@@ -29,53 +25,53 @@ public final class GuideRenderer {
 
 	public static void render(HuntTracker tracker) {
 		Minecraft mc = Minecraft.getInstance();
-		if (!tracker.enabled || !tracker.isActive() || mc.player == null) return;
+		TrackerConfig config = TrevorTrackerClient.CONFIG;
+		if (!config.enabled || !tracker.isActive() || mc.player == null) return;
 
 		float partialTick = mc.getDeltaTracker().getGameTimeDeltaPartialTick(true);
 		Vec3 goal = tracker.getGoalPos(partialTick);
 		if (goal == null) return;
 
-		if (tracker.mode != HuntTracker.Mode.LINE) drawPath(tracker);
-		if (tracker.mode != HuntTracker.Mode.PATH) drawTracer(mc, goal, tracker.throughWalls);
-		drawGoalMarker(tracker, partialTick);
+		if (config.mode != HuntTracker.Mode.LINE) drawPath(tracker, config);
+		if (config.mode != HuntTracker.Mode.PATH) drawTracer(mc, goal, config);
+		drawGoalMarker(tracker, config, partialTick);
 	}
 
-	private static void drawPath(HuntTracker tracker) {
+	private static void drawPath(HuntTracker tracker, TrackerConfig config) {
 		List<BlockPos> path = tracker.getPath();
 		if (path.size() < 2) return;
 
 		Vec3 playerPos = Minecraft.getInstance().player.position();
 		int start = closestIndex(path, playerPos);
-		int last = path.size() - 1;
+		int color = config.pathColor();
 
-		for (int i = start; i < last; i++) {
+		for (int i = start; i < path.size() - 1; i++) {
 			Vec3 a = nodeCenter(path.get(i));
 			Vec3 b = nodeCenter(path.get(i + 1));
-			int color = lerpColor(PATH_START_COLOR, PATH_END_COLOR, (float) i / last);
-
-			GizmoProperties line = (i - start) % 4 == 3
-					? Gizmos.arrow(a, b, color, 3.0f) // an arrow every few blocks shows which way to go
-					: Gizmos.line(a, b, color, 3.0f);
-			if (tracker.throughWalls) line.setAlwaysOnTop();
+			if ((i - start) % 4 == 3) {
+				Gizmos.arrow(a, b, color, config.pathWidth); // an arrow every few blocks shows which way to go
+			} else {
+				Gizmos.line(a, b, color, config.pathWidth);
+			}
 		}
 	}
 
-	private static void drawTracer(Minecraft mc, Vec3 goal, boolean throughWalls) {
+	private static void drawTracer(Minecraft mc, Vec3 goal, TrackerConfig config) {
 		Camera camera = mc.gameRenderer.getMainCamera();
 		Vector3fc forward = camera.forwardVector();
 		// Start slightly in front of the camera, otherwise the line is just a dot.
 		Vec3 start = camera.position().add(forward.x(), forward.y(), forward.z());
-		GizmoProperties line = Gizmos.line(start, goal, LINE_COLOR, 2.5f);
-		if (throughWalls) line.setAlwaysOnTop();
+		Gizmos.line(start, goal, config.tracerColor(), config.tracerWidth);
 	}
 
-	private static void drawGoalMarker(HuntTracker tracker, float partialTick) {
+	private static void drawGoalMarker(HuntTracker tracker, TrackerConfig config, float partialTick) {
 		Entity target = tracker.getTarget();
 		if (target != null) {
+			// The glow outline (see the mixins) is what shows through walls; this box is depth-tested.
+			if (!config.box) return;
 			Vec3 offset = target.getPosition(partialTick).subtract(target.position());
 			AABB box = target.getBoundingBox().move(offset).inflate(0.1);
-			GizmoProperties marker = Gizmos.cuboid(box, GizmoStyle.stroke(TARGET_COLOR, 2.5f));
-			if (tracker.throughWalls) marker.setAlwaysOnTop();
+			Gizmos.cuboid(box, GizmoStyle.stroke(config.outlineColor(), config.outlineWidth));
 		} else if (tracker.getArea() != null) {
 			// A tall column marks the area Trevor named, visible from far away.
 			BlockPos p = tracker.getArea().pos;
@@ -100,12 +96,5 @@ public final class GuideRenderer {
 			}
 		}
 		return Math.min(best, path.size() - 2);
-	}
-
-	private static int lerpColor(int from, int to, float t) {
-		int r = (int) (((from >> 16) & 0xFF) + (((to >> 16) & 0xFF) - ((from >> 16) & 0xFF)) * t);
-		int g = (int) (((from >> 8) & 0xFF) + (((to >> 8) & 0xFF) - ((from >> 8) & 0xFF)) * t);
-		int b = (int) ((from & 0xFF) + ((to & 0xFF) - (from & 0xFF)) * t);
-		return 0xFF000000 | (r << 16) | (g << 8) | b;
 	}
 }

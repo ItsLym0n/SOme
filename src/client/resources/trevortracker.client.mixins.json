@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "com.trevortracker.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"EntityMixin",
+		"MinecraftMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
