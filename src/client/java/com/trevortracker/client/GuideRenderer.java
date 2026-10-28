@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.gizmos.GizmoProperties;
 import net.minecraft.gizmos.GizmoStyle;
 import net.minecraft.gizmos.Gizmos;
 import net.minecraft.world.entity.Entity;
@@ -51,11 +52,10 @@ public final class GuideRenderer {
 			Vec3 b = nodeCenter(path.get(i + 1));
 			// With rainbow on, the colors flow along the path toward the animal.
 			int color = config.pathColor(i * RAINBOW_STEP);
-			if ((i - start) % 4 == 3) {
-				Gizmos.arrow(a, b, color, config.pathWidth); // an arrow every few blocks shows which way to go
-			} else {
-				Gizmos.line(a, b, color, config.pathWidth);
-			}
+			GizmoProperties line = (i - start) % 4 == 3
+					? Gizmos.arrow(a, b, color, config.pathWidth) // an arrow every few blocks shows which way to go
+					: Gizmos.line(a, b, color, config.pathWidth);
+			if (config.linesThroughWalls) line.setAlwaysOnTop();
 		}
 	}
 
@@ -65,25 +65,27 @@ public final class GuideRenderer {
 		// Start slightly in front of the camera, otherwise the line is just a dot.
 		Vec3 start = camera.position().add(forward.x(), forward.y(), forward.z());
 		if (!config.tracerRainbow) {
-			Gizmos.line(start, goal, config.tracerColor(0), config.tracerWidth);
+			GizmoProperties line = Gizmos.line(start, goal, config.tracerColor(0), config.tracerWidth);
+			if (config.linesThroughWalls) line.setAlwaysOnTop();
 			return;
 		}
 		// Split into pieces so the rainbow shows along the line.
 		for (int i = 0; i < TRACER_PIECES; i++) {
 			Vec3 a = start.lerp(goal, (double) i / TRACER_PIECES);
 			Vec3 b = start.lerp(goal, (double) (i + 1) / TRACER_PIECES);
-			Gizmos.line(a, b, config.tracerColor((float) i / TRACER_PIECES), config.tracerWidth);
+			GizmoProperties line = Gizmos.line(a, b, config.tracerColor((float) i / TRACER_PIECES), config.tracerWidth);
+			if (config.linesThroughWalls) line.setAlwaysOnTop();
 		}
 	}
 
 	private static void drawGoalMarker(HuntTracker tracker, TrackerConfig config, float partialTick) {
 		Entity target = tracker.getTarget();
 		if (target != null) {
-			// The glow outline (see the mixins) is what shows through walls; this box is depth-tested.
 			if (!config.box) return;
 			Vec3 offset = target.getPosition(partialTick).subtract(target.position());
 			AABB box = target.getBoundingBox().move(offset).inflate(0.1);
-			Gizmos.cuboid(box, GizmoStyle.stroke(config.outlineColor(0), config.outlineWidth));
+			GizmoProperties marker = Gizmos.cuboid(box, GizmoStyle.stroke(config.outlineColor(0), config.outlineWidth));
+			if (config.linesThroughWalls) marker.setAlwaysOnTop();
 		} else if (tracker.getArea() != null) {
 			// A tall column marks the area Trevor named, visible from far away.
 			BlockPos p = tracker.getArea().pos;

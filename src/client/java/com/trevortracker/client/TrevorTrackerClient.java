@@ -81,9 +81,14 @@ public class TrevorTrackerClient implements ClientModInitializer {
 				dispatcher.register(buildCommand()));
 	}
 
+	/** True for the hunted animal while the tracker is on; used by the mixins. */
+	public static boolean isHuntTarget(Entity entity) {
+		return CONFIG != null && CONFIG.enabled && entity == TRACKER.getTarget();
+	}
+
 	/** True for the hunted animal while the glow setting is on; used by the glow mixins. */
 	public static boolean isGlowTarget(Entity entity) {
-		return CONFIG != null && CONFIG.enabled && CONFIG.glow && entity == TRACKER.getTarget();
+		return isHuntTarget(entity) && CONFIG.glow;
 	}
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> buildCommand() {

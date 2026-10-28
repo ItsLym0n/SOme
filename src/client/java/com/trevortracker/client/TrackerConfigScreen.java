@@ -108,6 +108,10 @@ public class TrackerConfigScreen extends Screen {
 				.bounds(columnX[2], y, COLUMN_WIDTH, 20).build());
 
 		y += ROW;
+		addRenderableWidget(Button.builder(toggleLabel("Lines thru walls", config.linesThroughWalls), b -> {
+			config.linesThroughWalls = !config.linesThroughWalls;
+			b.setMessage(toggleLabel("Lines thru walls", config.linesThroughWalls));
+		}).bounds(columnX[0], y, COLUMN_WIDTH, 20).build());
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
 	}

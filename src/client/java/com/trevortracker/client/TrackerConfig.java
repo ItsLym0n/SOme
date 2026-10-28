@@ -40,6 +40,8 @@ public class TrackerConfig {
 	public float outlineWidth = 2.5f;
 	public boolean glow = true;
 	public boolean box = true;
+	/** Draw the path, tracer line and box on top of blocks so they show through walls. */
+	public boolean linesThroughWalls = true;
 
 	// Moving rainbow colors (replace the RGB sliders while on; opacity still applies)
 	public boolean pathRainbow = false;
