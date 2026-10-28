@@ -40,17 +40,6 @@ public class TrackerConfig {
 	public boolean glow = true;
 	public boolean box = true;
 
-	// Quest renewing through the Abiphone
-	public boolean autoRenew = false;
-	/** Off = one action per key press. On = the mod calls and accepts by itself (macro, ban risk). */
-	public boolean fullyAutomatic = false;
-	/** With a Booster Cookie the call is a command; without one the mod goes through the Abiphone menu. */
-	public boolean boosterCookie = true;
-	public String callCommand = "call trevor";
-	/** Seconds before Trevor's cooldown ends to start calling. */
-	public int renewLeadSeconds = 3;
-	public boolean autoAccept = false;
-
 	public int pathColor() {
 		return argb(pathAlpha, pathRed, pathGreen, pathBlue);
 	}
@@ -78,7 +67,6 @@ public class TrackerConfig {
 				TrackerConfig config = GSON.fromJson(reader, TrackerConfig.class);
 				if (config != null) {
 					if (config.mode == null) config.mode = HuntTracker.Mode.PATH;
-					if (config.callCommand == null || config.callCommand.isBlank()) config.callCommand = "call trevor";
 					return config;
 				}
 			} catch (Exception e) {

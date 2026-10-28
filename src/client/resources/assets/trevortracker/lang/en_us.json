@@ -2,6 +2,5 @@
 	"key.category.trevortracker.main": "Trevor Tracker",
 	"key.trevortracker.toggle": "Toggle tracker",
 	"key.trevortracker.mode": "Switch guide (path / line / both)",
-	"key.trevortracker.settings": "Open settings",
-	"key.trevortracker.action": "Call Trevor / accept quest (one step per press)"
+	"key.trevortracker.settings": "Open settings"
 }
