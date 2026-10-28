@@ -6,6 +6,9 @@ import java.util.function.IntSupplier;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -33,7 +36,7 @@ public class TrackerConfigScreen extends Screen {
 		int totalWidth = COLUMN_WIDTH * 3 + GAP * 2;
 		int left = width / 2 - totalWidth / 2;
 		columnX = new int[]{left, left + COLUMN_WIDTH + GAP, left + (COLUMN_WIDTH + GAP) * 2};
-		top = Math.max(36, (height - ROW * 8) / 2 + 12);
+		top = Math.max(32, (height - ROW * 10) / 2 + 14);
 
 		// Walking path
 		int x = columnX[0];
@@ -80,17 +83,68 @@ public class TrackerConfigScreen extends Screen {
 			b.setMessage(toggleLabel("Box", config.box));
 		}).bounds(columnX[2], y, COLUMN_WIDTH, 20).build());
 
+		// Quest renewing
+		y += ROW + 6;
+		addRenderableWidget(Button.builder(toggleLabel("Auto Renew", config.autoRenew), b -> {
+			config.autoRenew = !config.autoRenew;
+			b.setMessage(toggleLabel("Auto Renew", config.autoRenew));
+		}).bounds(columnX[0], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal("Call Trevor through the Abiphone when the cooldown is almost over")))
+				.build());
+		addRenderableWidget(Button.builder(cookieLabel(), b -> {
+			config.boosterCookie = !config.boosterCookie;
+			b.setMessage(cookieLabel());
+		}).bounds(columnX[1], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal(
+						"ON: call with the command below.\nOFF: open the Abiphone, click Trevor, then Call")))
+				.build());
+		addRenderableWidget(Button.builder(automationLabel(), b -> {
+			config.fullyAutomatic = !config.fullyAutomatic;
+			b.setMessage(automationLabel());
+		}).bounds(columnX[2], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal(
+						"Key Press: each press of the action key does one step.\n"
+								+ "Fully Auto: the mod does every step by itself. This is a macro under Hypixel's rules and can get you banned.")))
+				.build());
+
 		y += ROW;
+		addRenderableWidget(Button.builder(toggleLabel("Auto Accept", config.autoAccept), b -> {
+			config.autoAccept = !config.autoAccept;
+			b.setMessage(toggleLabel("Auto Accept", config.autoAccept));
+		}).bounds(columnX[0], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal("Accept Trevor's [YES] prompt")))
+				.build());
+		addRenderableWidget(new IntSlider(columnX[1], y, "Call Early (s)", 0, 10,
+				() -> config.renewLeadSeconds, v -> config.renewLeadSeconds = v));
+		EditBox commandBox = new EditBox(font, columnX[2], y, COLUMN_WIDTH, 20, Component.literal("Call command"));
+		commandBox.setMaxLength(64);
+		commandBox.setValue(config.callCommand);
+		commandBox.setResponder(v -> config.callCommand = v.trim());
+		commandBox.setTooltip(Tooltip.create(Component.literal("Command used to call Trevor with a Booster Cookie")));
+		addRenderableWidget(commandBox);
+
+		y += ROW + 6;
 		addRenderableWidget(Button.builder(toggleLabel("Enabled", config.enabled), b -> {
 			config.enabled = !config.enabled;
 			b.setMessage(toggleLabel("Enabled", config.enabled));
 		}).bounds(columnX[0], y, COLUMN_WIDTH, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Keybinds..."),
+						b -> minecraft.setScreen(new KeyBindsScreen(this, minecraft.options)))
+				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[2], y, COLUMN_WIDTH, 20).build());
 	}
 
 	private Component modeLabel() {
 		return Component.literal("Guide: " + config.mode);
+	}
+
+	private Component cookieLabel() {
+		return Component.literal("Booster Cookie: " + (config.boosterCookie ? "§aYES" : "§cNO"));
+	}
+
+	private Component automationLabel() {
+		return Component.literal("Mode: " + (config.fullyAutomatic ? "§cFully Auto" : "§aKey Press"));
 	}
 
 	private static Component toggleLabel(String name, boolean on) {
