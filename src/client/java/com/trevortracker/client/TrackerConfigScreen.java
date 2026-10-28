@@ -6,6 +6,7 @@ import java.util.function.IntSupplier;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -85,6 +86,9 @@ public class TrackerConfigScreen extends Screen {
 			config.enabled = !config.enabled;
 			b.setMessage(toggleLabel("Enabled", config.enabled));
 		}).bounds(columnX[0], y, COLUMN_WIDTH, 20).build());
+		addRenderableWidget(Button.builder(Component.literal("Keybinds..."),
+						b -> minecraft.setScreen(new KeyBindsScreen(this, minecraft.options)))
+				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[2], y, COLUMN_WIDTH, 20).build());
 	}

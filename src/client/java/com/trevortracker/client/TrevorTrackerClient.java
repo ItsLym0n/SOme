@@ -66,7 +66,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 				openSettingsNextTick = true;
 			}
 			if (openSettingsNextTick) {
-				// Delayed a tick so the chat screen closing after /trevortracker settings doesn't close it again.
+				// Delayed a tick so the chat screen closing after /trevortracker doesn't close it again.
 				openSettingsNextTick = false;
 				mc.setScreen(new TrackerConfigScreen(mc.screen));
 			}
@@ -89,14 +89,18 @@ public class TrevorTrackerClient implements ClientModInitializer {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> buildCommand() {
 		return literal("trevortracker")
 				.executes(ctx -> {
+					openSettingsNextTick = true;
+					return 1;
+				})
+				.then(literal("help").executes(ctx -> {
 					ctx.getSource().sendFeedback(Component.literal(
 							"§6Trevor Tracker§r - enabled: " + CONFIG.enabled + ", mode: " + CONFIG.mode + "\n"
-									+ "§7/trevortracker settings  (colors, thickness, glow)\n"
+									+ "§7/trevortracker  (opens settings: colors, thickness, glow, keybinds)\n"
 									+ "/trevortracker mode <path|line|both>\n"
 									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
 									+ "/trevortracker clear"));
 					return 1;
-				})
+				}))
 				.then(literal("mode").then(argument("mode", StringArgumentType.word())
 						.suggests((ctx, builder) -> {
 							for (HuntTracker.Mode m : HuntTracker.Mode.values()) builder.suggest(m.name().toLowerCase());
