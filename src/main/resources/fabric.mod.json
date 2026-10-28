@@ -1,0 +1,19 @@
+{
+	"schemaVersion": 1,
+	"id": "trevortracker",
+	"version": "${version}",
+	"name": "Trevor Tracker",
+	"description": "Guides you to Trevor's hunted animal in the Mushroom Desert on Hypixel SkyBlock.",
+	"authors": ["melvaro"],
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": ["com.trevortracker.client.TrevorTrackerClient"]
+	},
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

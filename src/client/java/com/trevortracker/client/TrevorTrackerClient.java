@@ -1,0 +1,122 @@
+package com.trevortracker.client;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import org.lwjgl.glfw.GLFW;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
+
+public class TrevorTrackerClient implements ClientModInitializer {
+	public static final String MOD_ID = "trevortracker";
+	public static final HuntTracker TRACKER = new HuntTracker();
+
+	private static KeyMapping toggleKey;
+	private static KeyMapping modeKey;
+
+	@Override
+	public void onInitializeClient() {
+		KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
+		toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"key.trevortracker.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, category));
+		modeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"key.trevortracker.mode", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, category));
+
+		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
+			if (!overlay) TRACKER.onChat(message);
+		});
+
+		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
+			while (toggleKey.consumeClick()) {
+				TRACKER.enabled = !TRACKER.enabled;
+				say(mc, "Tracker " + (TRACKER.enabled ? "enabled" : "disabled"));
+			}
+			while (modeKey.consumeClick()) {
+				TRACKER.mode = TRACKER.mode.next();
+				say(mc, "Guide mode: " + TRACKER.mode);
+			}
+			TRACKER.tick(mc);
+		});
+
+		LevelRenderEvents.BEFORE_GIZMOS.register(context -> GuideRenderer.render(TRACKER));
+		HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "hud"),
+				(graphics, deltaTracker) -> TrackerHud.render(TRACKER, graphics, deltaTracker));
+
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) ->
+				dispatcher.register(buildCommand()));
+	}
+
+	private static LiteralArgumentBuilder<FabricClientCommandSource> buildCommand() {
+		return literal("trevortracker")
+				.executes(ctx -> {
+					ctx.getSource().sendFeedback(Component.literal(
+							"§6Trevor Tracker§r - enabled: " + TRACKER.enabled + ", mode: " + TRACKER.mode
+									+ ", through walls: " + TRACKER.throughWalls + "\n"
+									+ "§7/trevortracker mode <path|line|both>\n"
+									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
+									+ "/trevortracker throughwalls  /trevortracker clear"));
+					return 1;
+				})
+				.then(literal("mode").then(argument("mode", StringArgumentType.word())
+						.suggests((ctx, builder) -> {
+							for (HuntTracker.Mode m : HuntTracker.Mode.values()) builder.suggest(m.name().toLowerCase());
+							return builder.buildFuture();
+						})
+						.executes(ctx -> {
+							String value = StringArgumentType.getString(ctx, "mode").toUpperCase();
+							try {
+								TRACKER.mode = HuntTracker.Mode.valueOf(value);
+								ctx.getSource().sendFeedback(Component.literal("Guide mode: " + TRACKER.mode));
+							} catch (IllegalArgumentException e) {
+								ctx.getSource().sendError(Component.literal("Use path, line or both"));
+							}
+							return 1;
+						})))
+				.then(literal("area").then(argument("name", StringArgumentType.greedyString())
+						.suggests((ctx, builder) -> {
+							for (HuntArea a : HuntArea.values()) builder.suggest(a.displayName);
+							return builder.buildFuture();
+						})
+						.executes(ctx -> {
+							HuntArea area = HuntArea.fromName(StringArgumentType.getString(ctx, "name"));
+							if (area == null) {
+								ctx.getSource().sendError(Component.literal("Unknown area"));
+								return 0;
+							}
+							TRACKER.startHunt(null, area);
+							ctx.getSource().sendFeedback(Component.literal("Tracking area: " + area.displayName));
+							return 1;
+						})))
+				.then(literal("throughwalls").executes(ctx -> {
+					TRACKER.throughWalls = !TRACKER.throughWalls;
+					ctx.getSource().sendFeedback(Component.literal("Draw through walls: " + TRACKER.throughWalls));
+					return 1;
+				}))
+				.then(literal("clear").executes(ctx -> {
+					TRACKER.clear();
+					ctx.getSource().sendFeedback(Component.literal("Hunt cleared"));
+					return 1;
+				}));
+	}
+
+	private static void say(Minecraft mc, String text) {
+		if (mc.player != null) {
+			mc.player.sendSystemMessage(Component.literal("[Trevor Tracker] ").withStyle(ChatFormatting.GOLD)
+					.append(Component.literal(text).withStyle(ChatFormatting.WHITE)));
+		}
+	}
+}
