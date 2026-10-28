@@ -19,6 +19,9 @@ import org.joml.Vector3fc;
  */
 public final class GuideRenderer {
 	private static final int AREA_COLOR = 0xFFB066FF;       // purple
+	/** Hue shift per path block when rainbow is on (about 30 blocks per full rainbow). */
+	private static final float RAINBOW_STEP = 1 / 30f;
+	private static final int TRACER_PIECES = 24;
 
 	private GuideRenderer() {
 	}
@@ -43,11 +46,11 @@ public final class GuideRenderer {
 
 		Vec3 playerPos = Minecraft.getInstance().player.position();
 		int start = closestIndex(path, playerPos);
-		int color = config.pathColor();
-
 		for (int i = start; i < path.size() - 1; i++) {
 			Vec3 a = nodeCenter(path.get(i));
 			Vec3 b = nodeCenter(path.get(i + 1));
+			// With rainbow on, the colors flow along the path toward the animal.
+			int color = config.pathColor(i * RAINBOW_STEP);
 			if ((i - start) % 4 == 3) {
 				Gizmos.arrow(a, b, color, config.pathWidth); // an arrow every few blocks shows which way to go
 			} else {
@@ -61,7 +64,16 @@ public final class GuideRenderer {
 		Vector3fc forward = camera.forwardVector();
 		// Start slightly in front of the camera, otherwise the line is just a dot.
 		Vec3 start = camera.position().add(forward.x(), forward.y(), forward.z());
-		Gizmos.line(start, goal, config.tracerColor(), config.tracerWidth);
+		if (!config.tracerRainbow) {
+			Gizmos.line(start, goal, config.tracerColor(0), config.tracerWidth);
+			return;
+		}
+		// Split into pieces so the rainbow shows along the line.
+		for (int i = 0; i < TRACER_PIECES; i++) {
+			Vec3 a = start.lerp(goal, (double) i / TRACER_PIECES);
+			Vec3 b = start.lerp(goal, (double) (i + 1) / TRACER_PIECES);
+			Gizmos.line(a, b, config.tracerColor((float) i / TRACER_PIECES), config.tracerWidth);
+		}
 	}
 
 	private static void drawGoalMarker(HuntTracker tracker, TrackerConfig config, float partialTick) {
@@ -71,7 +83,7 @@ public final class GuideRenderer {
 			if (!config.box) return;
 			Vec3 offset = target.getPosition(partialTick).subtract(target.position());
 			AABB box = target.getBoundingBox().move(offset).inflate(0.1);
-			Gizmos.cuboid(box, GizmoStyle.stroke(config.outlineColor(), config.outlineWidth));
+			Gizmos.cuboid(box, GizmoStyle.stroke(config.outlineColor(0), config.outlineWidth));
 		} else if (tracker.getArea() != null) {
 			// A tall column marks the area Trevor named, visible from far away.
 			BlockPos p = tracker.getArea().pos;

@@ -45,8 +45,13 @@ Press `O` or type `/trevortracker` to open the settings. They're saved to `confi
 | **Tracer Line** | Red, Green, Blue, Opacity, Thickness |
 | **Mob Outline** | Red, Green, Blue, Box Opacity, Box Thickness (the color is used for both the glow and the box) |
 
-Buttons below the sliders: **Guide** (path/line/both), **Glow (thru walls)** on/off,
-**Box** on/off. At the bottom: **Enabled**, **Keybinds...** and **Done**.
+Under each column there's a **Rainbow** toggle. It replaces that column's color with a
+moving rainbow (opacity and thickness still apply). On the path the colors flow toward
+the animal, and the glow and box cycle through every color. **Rainbow Speed** (1-10)
+sets how fast it moves.
+
+Buttons below that: **Guide** (path/line/both), **Glow (thru walls)** on/off,
+**Box** on/off. At the bottom: **Enabled**, **Rainbow Speed**, **Keybinds...** and **Done**.
 
 The glowing outline is the part that shows through walls. The path and box are hidden
 behind blocks like normal.
@@ -73,7 +78,7 @@ behind blocks like normal.
 ### 3. Add the mods
 Put **both** of these files into your `mods` folder:
 - `fabric-api-....jar`
-- `dist/trevor-tracker-1.1.1+26.1.2.jar` (the ready-built jar in this repo)
+- `dist/trevor-tracker-1.1.2+26.1.2.jar` (the ready-built jar in this repo)
 
 Where the `mods` folder is:
 - **Windows:** press `Win + R`, type `%appdata%\.minecraft\mods` and press Enter
@@ -94,7 +99,7 @@ You only need this if you change the code.
 2. Open a terminal in this folder and run:
    - Windows: `gradlew.bat build`
    - Mac/Linux: `./gradlew build`
-3. The mod appears in `build/libs/trevor-tracker-1.1.1.jar`.
+3. The mod appears in `build/libs/trevor-tracker-1.1.2.jar`.
 
 To work on it in an editor, open this folder in **IntelliJ IDEA** (Community is free).
 It picks up the Gradle project automatically.

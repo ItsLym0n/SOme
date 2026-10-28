@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.Mth;
 
 /** All user settings. Saved to config/trevortracker.json. */
 public class TrackerConfig {
@@ -40,21 +41,39 @@ public class TrackerConfig {
 	public boolean glow = true;
 	public boolean box = true;
 
-	public int pathColor() {
-		return argb(pathAlpha, pathRed, pathGreen, pathBlue);
+	// Moving rainbow colors (replace the RGB sliders while on; opacity still applies)
+	public boolean pathRainbow = false;
+	public boolean tracerRainbow = false;
+	public boolean outlineRainbow = false;
+	/** 1 = slow, 10 = fast. */
+	public int rainbowSpeed = 3;
+
+	/**
+	 * Colors take an {@code offset} (0-1) along the line, so a rainbow line shows every hue
+	 * at once and the colors flow along it. Solid colors ignore the offset.
+	 */
+	public int pathColor(float offset) {
+		return pathRainbow ? rainbow(pathAlpha, offset) : argb(pathAlpha, pathRed, pathGreen, pathBlue);
 	}
 
-	public int tracerColor() {
-		return argb(tracerAlpha, tracerRed, tracerGreen, tracerBlue);
+	public int tracerColor(float offset) {
+		return tracerRainbow ? rainbow(tracerAlpha, offset) : argb(tracerAlpha, tracerRed, tracerGreen, tracerBlue);
 	}
 
-	public int outlineColor() {
-		return argb(outlineAlpha, outlineRed, outlineGreen, outlineBlue);
+	public int outlineColor(float offset) {
+		return outlineRainbow ? rainbow(outlineAlpha, offset) : argb(outlineAlpha, outlineRed, outlineGreen, outlineBlue);
 	}
 
 	/** Glow outlines are always fully opaque, so this has no alpha. */
 	public int glowColor() {
-		return argb(0, outlineRed, outlineGreen, outlineBlue);
+		return outlineColor(0) & 0xFFFFFF;
+	}
+
+	/** Hue cycles over time; {@code offset} shifts it so different parts show different colors. */
+	private int rainbow(int alpha, float offset) {
+		float cycleMs = 12_000f / Math.max(1, rainbowSpeed);
+		float hue = (System.currentTimeMillis() % (long) cycleMs) / cycleMs - offset;
+		return Mth.hsvToArgb(hue - (float) Math.floor(hue), 1.0f, 1.0f, alpha);
 	}
 
 	private static int argb(int a, int r, int g, int b) {

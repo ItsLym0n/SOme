@@ -34,7 +34,7 @@ public class TrackerConfigScreen extends Screen {
 		int totalWidth = COLUMN_WIDTH * 3 + GAP * 2;
 		int left = width / 2 - totalWidth / 2;
 		columnX = new int[]{left, left + COLUMN_WIDTH + GAP, left + (COLUMN_WIDTH + GAP) * 2};
-		top = Math.max(36, (height - ROW * 8) / 2 + 12);
+		top = Math.max(32, (height - ROW * 9) / 2 + 14);
 
 		// Walking path
 		int x = columnX[0];
@@ -66,6 +66,21 @@ public class TrackerConfigScreen extends Screen {
 		addRenderableWidget(new IntSlider(x, y += ROW, "Box Thickness", 1, 10,
 				() -> Math.round(config.outlineWidth), v -> config.outlineWidth = v));
 
+		// Rainbow toggle under each column
+		y += ROW;
+		addRenderableWidget(Button.builder(rainbowLabel(config.pathRainbow), b -> {
+			config.pathRainbow = !config.pathRainbow;
+			b.setMessage(rainbowLabel(config.pathRainbow));
+		}).bounds(columnX[0], y, COLUMN_WIDTH, 20).build());
+		addRenderableWidget(Button.builder(rainbowLabel(config.tracerRainbow), b -> {
+			config.tracerRainbow = !config.tracerRainbow;
+			b.setMessage(rainbowLabel(config.tracerRainbow));
+		}).bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
+		addRenderableWidget(Button.builder(rainbowLabel(config.outlineRainbow), b -> {
+			config.outlineRainbow = !config.outlineRainbow;
+			b.setMessage(rainbowLabel(config.outlineRainbow));
+		}).bounds(columnX[2], y, COLUMN_WIDTH, 20).build());
+
 		// Toggles
 		y += ROW + 6;
 		addRenderableWidget(Button.builder(modeLabel(), b -> {
@@ -86,15 +101,23 @@ public class TrackerConfigScreen extends Screen {
 			config.enabled = !config.enabled;
 			b.setMessage(toggleLabel("Enabled", config.enabled));
 		}).bounds(columnX[0], y, COLUMN_WIDTH, 20).build());
+		addRenderableWidget(new IntSlider(columnX[1], y, "Rainbow Speed", 1, 10,
+				() -> config.rainbowSpeed, v -> config.rainbowSpeed = v));
 		addRenderableWidget(Button.builder(Component.literal("Keybinds..."),
 						b -> minecraft.setScreen(new KeyBindsScreen(this, minecraft.options)))
-				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
-		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[2], y, COLUMN_WIDTH, 20).build());
+
+		y += ROW;
+		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
+				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
 	}
 
 	private Component modeLabel() {
 		return Component.literal("Guide: " + config.mode);
+	}
+
+	private static Component rainbowLabel(boolean on) {
+		return Component.literal("Rainbow: " + (on ? "§aON" : "§cOFF"));
 	}
 
 	private static Component toggleLabel(String name, boolean on) {
@@ -110,21 +133,24 @@ public class TrackerConfigScreen extends Screen {
 		int labelY = top - 26;
 		int swatchY = top - 14;
 		graphics.text(font, "Walking Path", columnX[0], labelY, 0xFFFFFFFF);
-		swatch(graphics, columnX[0], swatchY, config.pathColor());
+		swatch(graphics, columnX[0], swatchY, config::pathColor);
 		graphics.text(font, "Tracer Line", columnX[1], labelY, 0xFFFFFFFF);
-		swatch(graphics, columnX[1], swatchY, config.tracerColor());
+		swatch(graphics, columnX[1], swatchY, config::tracerColor);
 		graphics.text(font, "Mob Outline", columnX[2], labelY, 0xFFFFFFFF);
-		swatch(graphics, columnX[2], swatchY, config.outlineColor());
+		swatch(graphics, columnX[2], swatchY, config::outlineColor);
 	}
 
-	private static void swatch(GuiGraphicsExtractor graphics, int x, int y, int color) {
+	/** {@code colorAt} gets the position across the swatch (0-1), so a rainbow previews as a moving gradient. */
+	private static void swatch(GuiGraphicsExtractor graphics, int x, int y, FloatToIntFunction colorAt) {
 		int w = COLUMN_WIDTH;
 		// Checkerboard behind the swatch so opacity is visible
 		for (int i = 0; i < w; i += 5) {
 			graphics.fill(x + i, y, Math.min(x + i + 5, x + w), y + 5, (i / 5) % 2 == 0 ? 0xFF999999 : 0xFF666666);
 			graphics.fill(x + i, y + 5, Math.min(x + i + 5, x + w), y + 10, (i / 5) % 2 == 0 ? 0xFF666666 : 0xFF999999);
 		}
-		graphics.fill(x, y, x + w, y + 10, color);
+		for (int i = 0; i < w; i += 2) {
+			graphics.fill(x + i, y, Math.min(x + i + 2, x + w), y + 10, colorAt.apply((float) i / w));
+		}
 		graphics.outline(x - 1, y - 1, w + 2, 12, 0xFFFFFFFF);
 	}
 
@@ -132,6 +158,11 @@ public class TrackerConfigScreen extends Screen {
 	public void onClose() {
 		config.save();
 		minecraft.setScreen(parent);
+	}
+
+	@FunctionalInterface
+	private interface FloatToIntFunction {
+		int apply(float value);
 	}
 
 	/** Slider for a whole-number setting. */
