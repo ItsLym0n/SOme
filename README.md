@@ -1,27 +1,29 @@
 # Citrus Client
 
-A Fabric mod for **Minecraft 26.1.2** on Hypixel SkyBlock. It combines two features in
-one mod with a SkyHanni-style settings menu:
+A Fabric mod for **Minecraft 26.1.2** on Hypixel SkyBlock. It combines three mods in
+one, with a SkyHanni-style settings menu:
 
 - **Hunting:** Trevor Tracker guides you to the animal Trevor asks you to hunt, and can
   call Trevor, accept his quest and warp for you.
 - **End:** Ender Node Finder highlights ender nodes and draws a walking path to them.
+- **Misc:** Third Person Crosshair shows the crosshair in third-person back view.
 
 ## Install
 
 1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft 26.1.2.
 2. Put these two jars in your `.minecraft/mods` folder:
-   - `dist/citrus-client-1.0.0+26.1.2.jar` (this mod)
+   - `dist/citrus-client-1.1.0+26.1.2.jar` (this mod)
    - [Fabric API](https://modrinth.com/mod/fabric-api) for 26.1.2
-3. **Remove the old `trevor-tracker-…` and `ender-node-finder-…` jars** if you have them.
-   Citrus Client replaces both, and your settings carry over.
+3. **Remove the old `trevor-tracker-…`, `ender-node-finder-…` and
+   `third-person-crosshair-…` jars** if you have them. Citrus Client replaces all three,
+   and your settings carry over.
 4. Launch the game with the Fabric profile.
 
 ## The menu
 
 Open it with **Right Shift**, `/cc` or `/citrusclient`.
 
-- **Sections** on the left: **Hunting**, **End** and **General** (keybinds).
+- **Sections** on the left: **Hunting**, **End**, **Misc** and **General** (keybinds).
 - **Features** on the right. Each row has an **ON/OFF** switch, and the **▶** arrow drops
   down its options (colors, thickness, rainbow, timings...).
 - **Search** at the top finds features and options in every section.
@@ -29,7 +31,8 @@ Open it with **Right Shift**, `/cc` or `/citrusclient`.
 Shortcuts straight to a section: `/trevortracker` or `O` for Hunting, `/endernode` or `N`
 for End.
 
-Settings are saved to `config/trevortracker.json` and `config/endernodefinder.json`.
+Settings are saved to `config/trevortracker.json`, `config/endernodefinder.json` and
+`config/citrusclient.json` (Misc).
 
 ## Keys and commands
 
@@ -115,6 +118,14 @@ How the path works:
 
 ---
 
+## Misc
+
+| Feature | What it does |
+|---|---|
+| **Third Person Crosshair** | Shows the crosshair in third-person back view (F5 once). Minecraft normally hides it outside first person. On by default. |
+
+---
+
 > ⚠️ **Use at your own risk.** Hypixel's rules don't allow mods that give an unfair
 > advantage. Seeing mobs or nodes through walls can count as ESP, and Auto Call, Auto
 > Accept and Auto Warp send commands by themselves, which can count as macros. All of
@@ -123,13 +134,14 @@ How the path works:
 ## Building it yourself
 
 Install **JDK 25**, then run `./gradlew build` (Windows: `gradlew.bat build`). The mod
-appears in `build/libs/citrus-client-1.0.0.jar`.
+appears in `build/libs/citrus-client-1.1.0.jar`.
 
 ## How the code is organised
 
 | Folder | What's in it |
 |---|---|
-| `com/citrusclient` | Startup, menu key and commands |
+| `com/citrusclient` | Startup, menu key and commands, Misc settings (`CitrusConfig`) |
+| `com/citrusclient/mixin` | Misc: Third Person Crosshair |
 | `com/citrusclient/menu` | The SkyHanni-style menu (`CitrusScreen`) and its sections (`MenuSections`) |
 | `com/trevortracker/client` | Hunting: Trevor Tracker, auto call/accept/warp, HUD, glow mixins |
 | `dev/endernode` | End: Ender Node Finder scanner, pathfinder and rendering |

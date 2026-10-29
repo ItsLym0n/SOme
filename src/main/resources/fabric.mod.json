@@ -3,7 +3,7 @@
 	"id": "citrusclient",
 	"version": "${version}",
 	"name": "Citrus Client [${version}]",
-	"description": "Citrus Client for Hypixel SkyBlock: Trevor Tracker (Hunting) and Ender Node Finder (End). Open the menu with Right Shift or /cc.",
+	"description": "Citrus Client for Hypixel SkyBlock: Trevor Tracker (Hunting), Ender Node Finder (End) and Third Person Crosshair (Misc). Open the menu with Right Shift or /cc.",
 	"authors": [
 		"melvaro"
 	],
@@ -21,6 +21,7 @@
 		"fabric-api": "*"
 	},
 	"mixins": [
-		"trevortracker.client.mixins.json"
+		"trevortracker.client.mixins.json",
+		"citrusclient.client.mixins.json"
 	]
 }

@@ -3,6 +3,7 @@ package com.citrusclient.menu;
 import java.util.List;
 
 import com.citrusclient.CitrusClient;
+import com.citrusclient.CitrusConfig;
 import com.citrusclient.menu.MenuModel.Action;
 import com.citrusclient.menu.MenuModel.Channel;
 import com.citrusclient.menu.MenuModel.Color;
@@ -25,7 +26,7 @@ final class MenuSections {
 	}
 
 	static List<Section> build() {
-		return List.of(hunting(), end(), general());
+		return List.of(hunting(), end(), misc(), general());
 	}
 
 	private static Section hunting() {
@@ -136,6 +137,15 @@ final class MenuSections {
 								new Slider("Group Radius", 0, 16, () -> c.groupRadius, v -> c.groupRadius = v, "OFF"),
 								new Slider("Group Size", 2, 8, () -> c.groupSize, v -> c.groupSize = v),
 								new Slider("Same Level ±", 0, 10, () -> c.sameLevelRange, v -> c.sameLevelRange = v)))));
+	}
+
+	private static Section misc() {
+		CitrusConfig c = CitrusClient.CONFIG;
+		return new Section(CitrusClient.MISC, List.of(
+				new Feature("Third Person Crosshair",
+						"Show the crosshair in third-person back view (F5).",
+						new Toggle("Enabled", () -> c.thirdPersonCrosshair, v -> c.thirdPersonCrosshair = v),
+						List.of())));
 	}
 
 	private static Section general() {

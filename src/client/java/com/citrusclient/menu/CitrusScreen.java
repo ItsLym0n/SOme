@@ -329,6 +329,7 @@ public class CitrusScreen extends Screen {
 	public void onClose() {
 		TrevorTrackerClient.CONFIG.save();
 		EnderNodeFinder.config.save();
+		CitrusClient.CONFIG.save();
 		minecraft.setScreen(parent);
 	}
 

@@ -16,8 +16,8 @@ import org.jspecify.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 /**
- * Citrus Client: Trevor Tracker (Hunting) and Ender Node Finder (End) in one mod,
- * with one SkyHanni-style settings menu.
+ * Citrus Client: Trevor Tracker (Hunting), Ender Node Finder (End) and Third Person
+ * Crosshair (Misc) in one mod, with one SkyHanni-style settings menu.
  */
 public class CitrusClient implements ClientModInitializer {
 	public static final String MOD_ID = "citrusclient";
@@ -28,6 +28,9 @@ public class CitrusClient implements ClientModInitializer {
 	// Menu sections
 	public static final String HUNTING = "Hunting";
 	public static final String END = "End";
+	public static final String MISC = "Misc";
+
+	public static CitrusConfig CONFIG;
 
 	private static KeyMapping menuKey;
 	/** Section to open the menu at on the next tick, or null. */
@@ -35,6 +38,8 @@ public class CitrusClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		CONFIG = CitrusConfig.load();
+
 		KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
 		menuKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.citrusclient.menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_SHIFT, category));
