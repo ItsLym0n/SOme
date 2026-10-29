@@ -6,7 +6,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"trevortracker" {
+		"citrusclient" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -33,7 +33,7 @@ processClientResources {
 	def version = project.version
 	inputs.property "version", version
 
-	filesMatching("assets/trevortracker/lang/*.json") {
+	filesMatching("assets/*/lang/*.json") {
 		expand "version": version
 	}
 }

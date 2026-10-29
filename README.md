@@ -1,172 +1,135 @@
-# ULTIMATE LYMON's TREVOR ESP SIMULATOR
+# Citrus Client
 
-A Fabric mod for **Minecraft 26.1.2** that guides you to the animal Trevor asks you
-to hunt in the Mushroom Desert on Hypixel SkyBlock.
+A Fabric mod for **Minecraft 26.1.2** on Hypixel SkyBlock. It combines two features in
+one mod with a SkyHanni-style settings menu:
 
-## What it does
+- **Hunting:** Trevor Tracker guides you to the animal Trevor asks you to hunt, and can
+  call Trevor, accept his quest and warp for you.
+- **End:** Ender Node Finder highlights ender nodes and draws a walking path to them.
 
-- **Reads Trevor's message.** When he says *"You can find your TRACKABLE animal near
-  the Desert Settlement."*, the mod remembers the rarity and the area.
-- **Before the animal loads**, it puts a purple column on that area and draws a
-  walking path toward it.
-- **When the animal loads** (Minecraft only knows about mobs that are fairly close),
-  it finds the mob by its nametag (`Trackable Cow`, `Elusive Horse`, ...), gives it a
-  **glowing outline you can see through walls**, draws a box around it and switches
-  the path to lead straight to it.
-- **The walking path** goes around walls, steps up blocks, drops down ledges, swims
-  through water and avoids cactus and lava. Every few blocks there's an arrow showing
-  which way to walk.
-- **The HUD** in the top-left shows the target, its distance, a compass direction, an
-  arrow showing which way to turn, and how far up or down it is.
-- **It clears itself** when the mob dies or the hunt runs out of time.
+## Install
 
-## Controls
+1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft 26.1.2.
+2. Put these two jars in your `.minecraft/mods` folder:
+   - `dist/citrus-client-1.0.0+26.1.2.jar` (this mod)
+   - [Fabric API](https://modrinth.com/mod/fabric-api) for 26.1.2
+3. **Remove the old `trevor-tracker-…` and `ender-node-finder-…` jars** if you have them.
+   Citrus Client replaces both, and your settings carry over.
+4. Launch the game with the Fabric profile.
+
+## The menu
+
+Open it with **Right Shift**, `/cc` or `/citrusclient`.
+
+- **Sections** on the left: **Hunting**, **End** and **General** (keybinds).
+- **Features** on the right. Each row has an **ON/OFF** switch, and the **▶** arrow drops
+  down its options (colors, thickness, rainbow, timings...).
+- **Search** at the top finds features and options in every section.
+
+Shortcuts straight to a section: `/trevortracker` or `O` for Hunting, `/endernode` or `N`
+for End.
+
+Settings are saved to `config/trevortracker.json` and `config/endernodefinder.json`.
+
+## Keys and commands
 
 | Key / command | What it does |
 |---|---|
-| `O` or `/trevortracker` | Open the settings screen |
-| `J` | Turn the tracker on/off |
-| `K` | Switch guide: **PATH** → **LINE** (straight tracer) → **BOTH** |
-| `/trevortracker help` | List all commands |
-| `/trevortracker mode path\|line\|both` | Set the guide mode |
-| `/trevortracker area Oasis` | Set the area by hand if you missed Trevor's message |
-| `/trevortracker autocall [on\|off]` | Call Trevor after a kill (see below) |
-| `/trevortracker autoaccept [on\|off]` | Click [YES] on Trevor's prompt |
-| `/trevortracker autowarp [on\|off]` | Warp with your travel scrolls when Trevor gives a quest |
-| `/trevortracker early <0-10>` | Seconds before the cooldown ends to call (default 3) |
-| `/trevortracker callcommand call Trevor` | The command used to call Trevor |
-| `/trevortracker clear` | Forget the current hunt |
+| `Right Shift`, `/cc`, `/citrusclient` | Open the Citrus Client menu |
+| `O`, `/trevortracker` | Open the Hunting section |
+| `N`, `/endernode` | Open the End section |
+| `J` | Trevor Tracker on/off |
+| `K` | Trevor guide: PATH → LINE → BOTH |
+| *(unbound)* | Ender Node Finder on/off |
+| `/trevortracker help` | List the Trevor commands |
 
-You can rebind the keys with the **Keybinds...** button in the settings, or in
-Options → Controls → Key Binds → *ULTIMATE LYMON's TREVOR ESP SIMULATOR*.
-
-## Auto call Trevor (Booster Cookie)
-
-Turn on **Auto Call Trevor** in the settings or with `/trevortracker autocall on`.
-
-- While the hunted animal is **alive**, nothing happens.
-- When it **dies**, the mod sends `/call Trevor` **3 seconds before** Trevor's 20 second
-  cooldown ends (counted from when he gave you the quest). If the cooldown is already
-  over, it calls right away.
-- If the hunt **runs out of time**, it doesn't call.
-- As soon as Trevor answers (his YES/NO prompt or any message from him), it stops
-  calling. If he doesn't answer at all, it tries again every 5 seconds, 3 calls at most.
-- The HUD shows *Calling Trevor in 2s* while it waits.
-
-Change the timing with the **Call Early** slider or `/trevortracker early <seconds>`.
-
-**Auto Accept** (settings button, or `/trevortracker autoaccept on`) clicks **[YES]** on
-Trevor's "Click an option" prompt for you, half a second after it shows up. It works for
-calls and when you talk to Trevor in person.
-
-> ⚠️ The mod sends these commands by itself, which Hypixel may treat as a macro.
-
-## Auto warp (travel scrolls)
-
-Turn on **Auto Warp** in the settings or with `/trevortracker autowarp on`. When Trevor
-gives you a quest, the mod warps you toward the area about a second later:
-
-| Area | Command |
-|---|---|
-| Mushroom Gorge, Glowing Mushroom Cave, Overgrown Mushroom Cave | `/warp glowing` |
-| Desert Settlement, Oasis, Desert Mountain | `/warp desert` |
-
-You need the *Travel Scroll to the Glowing Mushroom Caves* and *Travel Scroll to the
-Mushroom Desert* unlocked. It decides based on **where your last quest was** (that's
-where you just hunted), and only warps when the new area is in the other set:
-
-- Last quest and new quest both in Desert Settlement / Oasis / Desert Mountain: no warp.
-- Both in Mushroom Gorge / Glowing / Overgrown Mushroom Cave: no warp.
-- **Desert Mountain ↔ Mushroom Gorge:** no warp either way, they're right next to each other.
-- **First quest after logging in:** no warp, since there's no last quest yet.
-
-> ⚠️ The mod sends the warp by itself, which Hypixel may treat as a macro.
-
-## Settings
-
-Press `O` or type `/trevortracker` to open the settings. They're saved to `config/trevortracker.json`.
-
-| Column | Sliders |
-|---|---|
-| **Walking Path** | Red, Green, Blue, Opacity, Thickness |
-| **Tracer Line** | Red, Green, Blue, Opacity, Thickness |
-| **Mob Outline** | Red, Green, Blue, Box Opacity, Box Thickness (the color is used for both the glow and the box) |
-
-Under each column there's a **Rainbow** toggle. It replaces that column's color with a
-moving rainbow (opacity and thickness still apply). On the path the colors flow toward
-the animal, and the glow and box cycle through every color. **Rainbow Speed** (1-10)
-sets how fast it moves.
-
-Buttons below that: **Guide** (path/line/both), **Glow (thru walls)** on/off,
-**Box** on/off. At the bottom: **Enabled**, **Rainbow Speed**, **Keybinds...**, **Lines thru walls**,
-then **Auto Call Trevor**, **Call Early (s)**, the call command box, **Auto Accept**, **Done** and **Auto Warp**.
-
-**Glow (thru walls)** outlines the animal itself through walls. **Lines thru walls**
-(on by default) draws the path, tracer line and box on top of blocks too. Turn it off
-to hide them behind blocks. The hunted animal is always drawn while it's loaded, even
-past the distance where Minecraft normally stops drawing small mobs, so the glow shows
-from farther away.
-
-> ⚠️ **Use at your own risk.** Hypixel's rules forbid mods that give an unfair advantage,
-> and seeing mobs through walls can count as "ESP". You can turn the glow off in the
-> settings. Similar Trevor features exist in popular mods like SkyHanni, but any custom
-> mod is your own responsibility.
+Change keys in the menu under **General → Keybinds**, or in Options → Controls → Key Binds →
+*Citrus Client*.
 
 ---
 
-## Installing (step by step)
+## Hunting (Trevor Tracker)
 
-### 1. Install Fabric for 26.1.2
-1. Go to https://fabricmc.net/use/installer/ and download the installer.
-2. Run it, choose **Minecraft version 26.1.2**, and click **Install**.
-3. Open the Minecraft Launcher. There's now a profile called **fabric-loader-26.1.2**.
-   Launch it once and close the game. This creates the `mods` folder.
+- **Reads Trevor's message** ("You can find your TRACKABLE animal near the Desert
+  Settlement.") and puts a purple column on that area with a walking path to it.
+- **When the animal loads**, it finds it by its nametag, makes it **glow through walls**
+  and leads the path straight to it.
+- **Walking path** goes around walls, steps up blocks, drops down ledges, swims and avoids
+  cactus and lava, with an arrow every few blocks.
+- **HUD** in the top-left shows the target, distance, direction and height difference.
 
-### 2. Install Fabric API
-1. Go to https://modrinth.com/mod/fabric-api/versions
-2. Download a version for **26.1.2** (for example `0.155.3+26.1.2`).
+| Feature | Options |
+|---|---|
+| **Trevor Tracker** | Guide (path / line / both), Lines thru walls, Rainbow Speed |
+| **Walking Path** | Color + opacity, Thickness, Rainbow |
+| **Tracer Line** | Color + opacity, Thickness, Rainbow |
+| **Mob Glow** | Outline color (also used for the box), Rainbow |
+| **Mob Box** | Opacity, Thickness |
+| **Auto Call Trevor** | Call Early (seconds), Command |
+| **Auto Accept** | – |
+| **Auto Warp** | – |
 
-### 3. Add the mods
-Put **both** of these files into your `mods` folder:
-- `fabric-api-....jar`
-- `dist/trevor-tracker-1.4.2+26.1.2.jar` (the ready-built jar in this repo)
+**Auto Call Trevor** (Booster Cookie): after the animal **dies**, sends `/call Trevor`
+3 seconds before Trevor's 20 second cooldown ends, or right away if it's already over. It
+doesn't call while the animal is alive or after a timeout, and stops as soon as Trevor answers.
 
-Where the `mods` folder is:
-- **Windows:** press `Win + R`, type `%appdata%\.minecraft\mods` and press Enter
-- **Mac:** `~/Library/Application Support/minecraft/mods`
-- **Linux:** `~/.minecraft/mods`
+**Auto Accept** clicks **[YES]** on Trevor's prompt half a second after it shows up.
 
-### 4. Play
-Launch the **fabric-loader-26.1.2** profile, join Hypixel, warp to the trapper
-(`/warp trapper`), talk to Trevor, and follow the line.
+**Auto Warp** uses your travel scrolls when a quest starts, based on where your last
+quest was:
+
+| Last quest → new quest | Result |
+|---|---|
+| Oasis / Desert Settlement / Desert Mountain → one of those | no warp |
+| Mushroom Gorge / Glowing / Overgrown caves → one of those | no warp |
+| Desert Mountain ↔ Mushroom Gorge | no warp |
+| desert area → cave area | `/warp glowing` |
+| cave area → desert area | `/warp desert` |
+| first quest after logging in | no warp |
+
+Other Trevor commands: `/trevortracker mode <path|line|both>`, `area <name>`,
+`autocall`, `autoaccept`, `autowarp`, `early <0-10>`, `callcommand <command>`, `clear`.
 
 ---
 
-## Building it yourself (optional)
+## End (Ender Node Finder)
 
-You only need this if you change the code.
+| Feature | Options |
+|---|---|
+| **Ender Node Finder** | Scan Range, Through Walls |
+| **Node Box** | Color + opacity, Fill, Thickness |
+| **Route Line** | Color + opacity, Thickness |
+| **Node Groups** | Group Radius (0 = off), Group Size, Same Level ± |
 
-1. Install **JDK 25**, for example from https://adoptium.net/temurin/releases/?version=25
-2. Open a terminal in this folder and run:
-   - Windows: `gradlew.bat build`
-   - Mac/Linux: `./gradlew build`
-3. The mod appears in `build/libs/trevor-tracker-1.4.2.jar`.
+How the path works:
 
-To work on it in an editor, open this folder in **IntelliJ IDEA** (Community is free).
-It picks up the Gradle project automatically.
+1. **Picking a node:** it computes a real walking path to the closest few nodes and picks
+   the shortest walk. Nodes more than *Same Level ±* blocks above or below you cost extra.
+2. **Groups first:** if *Group Size* or more nodes are within *Group Radius* of each
+   other, it goes to the nearest group first and stays there until it's cleared.
+3. **No sudden switching:** a new node can't take over the path for 2 seconds, and the
+   current target gets a 4-block head start.
+4. **Walking path** on solid blocks, drawn as steps so it doesn't cut through blocks.
+5. **Crosshair guide:** when you can't see the node, a line from your crosshair shows
+   which way to go.
+
+---
+
+> ⚠️ **Use at your own risk.** Hypixel's rules don't allow mods that give an unfair
+> advantage. Seeing mobs or nodes through walls can count as ESP, and Auto Call, Auto
+> Accept and Auto Warp send commands by themselves, which can count as macros. All of
+> these can be turned off in the menu.
+
+## Building it yourself
+
+Install **JDK 25**, then run `./gradlew build` (Windows: `gradlew.bat build`). The mod
+appears in `build/libs/citrus-client-1.0.0.jar`.
 
 ## How the code is organised
 
-| File | Job |
+| Folder | What's in it |
 |---|---|
-| `TrevorTrackerClient.java` | Startup: keybinds, chat listener, commands, hooks |
-| `TrackerConfig.java` | Saved settings (colors, thickness, toggles) |
-| `TrackerConfigScreen.java` | The settings screen |
-| `mixin/MinecraftMixin.java`, `mixin/EntityMixin.java` | Make the hunted animal glow in your color |
-| `TrevorCaller.java` | Calls Trevor after a kill, just before the cooldown ends, and accepts his prompt |
-| `TrevorWarper.java` | Warps with travel scrolls when a quest starts |
-| `HuntTracker.java` | Reads chat, finds the animal, runs the pathfinder |
-| `PathFinder.java` | A* search for a walkable route, spread over several ticks |
-| `GuideRenderer.java` | Draws the path, tracer line and boxes |
-| `TrackerHud.java` | The text in the top-left corner |
-| `HuntArea.java` | The six Mushroom Desert areas and their coordinates |
+| `com/citrusclient` | Startup, menu key and commands |
+| `com/citrusclient/menu` | The SkyHanni-style menu (`CitrusScreen`) and its sections (`MenuSections`) |
+| `com/trevortracker/client` | Hunting: Trevor Tracker, auto call/accept/warp, HUD, glow mixins |
+| `dev/endernode` | End: Ender Node Finder scanner, pathfinder and rendering |

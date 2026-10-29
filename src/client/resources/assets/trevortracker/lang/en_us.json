@@ -1,6 +1,5 @@
 {
-	"key.category.trevortracker.main": "ULTIMATE LYMON's TREVOR ESP SIMULATOR [${version}]",
-	"key.trevortracker.toggle": "Toggle tracker",
-	"key.trevortracker.mode": "Switch guide (path / line / both)",
-	"key.trevortracker.settings": "Open settings"
+	"key.trevortracker.toggle": "Trevor Tracker: on/off",
+	"key.trevortracker.mode": "Trevor Tracker: switch guide (path / line / both)",
+	"key.trevortracker.settings": "Open Hunting settings"
 }

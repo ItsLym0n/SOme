@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "trevortracker",
+	"id": "citrusclient",
 	"version": "${version}",
-	"name": "ULTIMATE LYMON's TREVOR ESP SIMULATOR [${version}]",
-	"description": "Guides you to Trevor's hunted animal in the Mushroom Desert on Hypixel SkyBlock. Press O or use /trevortracker settings to change colors.",
+	"name": "Citrus Client [${version}]",
+	"description": "Citrus Client for Hypixel SkyBlock: Trevor Tracker (Hunting) and Ender Node Finder (End). Open the menu with Right Shift or /cc.",
 	"authors": [
 		"melvaro"
 	],
@@ -11,7 +11,7 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"com.trevortracker.client.TrevorTrackerClient"
+			"com.citrusclient.CitrusClient"
 		]
 	},
 	"depends": {

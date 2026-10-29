@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.fabricmc.api.ClientModInitializer;
+import com.citrusclient.CitrusClient;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -12,7 +12,6 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -26,12 +25,11 @@ import org.slf4j.LoggerFactory;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 
-public class TrevorTrackerClient implements ClientModInitializer {
+/** The Trevor hunting features of Citrus Client (the Hunting section of the menu). */
+public class TrevorTrackerClient {
 	public static final String MOD_ID = "trevortracker";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final String VERSION = FabricLoader.getInstance().getModContainer(MOD_ID)
-			.map(mod -> mod.getMetadata().getVersion().getFriendlyString()).orElse("?");
-	public static final String DISPLAY_NAME = "ULTIMATE LYMON's TREVOR ESP SIMULATOR [" + VERSION + "]";
+	public static final String DISPLAY_NAME = "Trevor Tracker";
 	public static final HuntTracker TRACKER = new HuntTracker();
 	public static final TrevorCaller CALLER = new TrevorCaller();
 	public static final TrevorWarper WARPER = new TrevorWarper();
@@ -40,13 +38,10 @@ public class TrevorTrackerClient implements ClientModInitializer {
 	private static KeyMapping toggleKey;
 	private static KeyMapping modeKey;
 	private static KeyMapping settingsKey;
-	private static boolean openSettingsNextTick;
 
-	@Override
-	public void onInitializeClient() {
+	public static void init(KeyMapping.Category category) {
 		CONFIG = TrackerConfig.load();
 
-		KeyMapping.Category category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(MOD_ID, "main"));
 		toggleKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.trevortracker.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, category));
 		modeKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
@@ -73,12 +68,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 				say(mc, "Guide mode: " + CONFIG.mode);
 			}
 			while (settingsKey.consumeClick()) {
-				openSettingsNextTick = true;
-			}
-			if (openSettingsNextTick) {
-				// Delayed a tick so the chat screen closing after /trevortracker doesn't close it again.
-				openSettingsNextTick = false;
-				mc.setScreen(new TrackerConfigScreen(mc.screen));
+				CitrusClient.openMenu(CitrusClient.HUNTING);
 			}
 			TRACKER.tick(mc);
 			CALLER.tick(mc);
@@ -106,13 +96,13 @@ public class TrevorTrackerClient implements ClientModInitializer {
 	private static LiteralArgumentBuilder<FabricClientCommandSource> buildCommand() {
 		return literal("trevortracker")
 				.executes(ctx -> {
-					openSettingsNextTick = true;
+					CitrusClient.openMenu(CitrusClient.HUNTING);
 					return 1;
 				})
 				.then(literal("help").executes(ctx -> {
 					ctx.getSource().sendFeedback(Component.literal(
 							"§6" + DISPLAY_NAME + "§r - enabled: " + CONFIG.enabled + ", mode: " + CONFIG.mode + "\n"
-									+ "§7/trevortracker  (opens settings: colors, thickness, glow, keybinds)\n"
+									+ "§7/trevortracker  (opens the Hunting settings)\n"
 									+ "/trevortracker mode <path|line|both>\n"
 									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
 									+ "/trevortracker autocall [on|off]  (call Trevor after a kill)\n"
@@ -155,7 +145,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 							return 1;
 						})))
 				.then(literal("settings").executes(ctx -> {
-					openSettingsNextTick = true;
+					CitrusClient.openMenu(CitrusClient.HUNTING);
 					return 1;
 				}))
 				.then(literal("autocall")
@@ -216,7 +206,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 
 	private static void say(Minecraft mc, String text) {
 		if (mc.player != null) {
-			mc.player.sendSystemMessage(Component.literal("[" + DISPLAY_NAME + "] ").withStyle(ChatFormatting.GOLD)
+			mc.player.sendSystemMessage(Component.literal("[Citrus Client] ").withStyle(ChatFormatting.GOLD)
 					.append(Component.literal(text).withStyle(ChatFormatting.WHITE)));
 		}
 	}
