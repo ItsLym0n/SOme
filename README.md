@@ -72,15 +72,13 @@ gives you a quest, the mod warps you toward the area about a second later:
 | Desert Settlement, Oasis, Desert Mountain | `/warp desert` |
 
 You need the *Travel Scroll to the Glowing Mushroom Caves* and *Travel Scroll to the
-Mushroom Desert* unlocked. It warps once per quest, and **only when you're on the other
-side**:
+Mushroom Desert* unlocked. It decides based on **where your last quest was** (that's
+where you just hunted), and only warps when the new area is in the other set:
 
-- In Desert Settlement, Oasis or Desert Mountain with the animal in one of those: no warp.
-- In Mushroom Gorge, Glowing or Overgrown Mushroom Cave with the animal in one of those: no warp.
+- Last quest and new quest both in Desert Settlement / Oasis / Desert Mountain: no warp.
+- Both in Mushroom Gorge / Glowing / Overgrown Mushroom Cave: no warp.
 - **Desert Mountain ↔ Mushroom Gorge:** no warp either way, they're right next to each other.
-- Anywhere else (like Trapper's Den): warps to the animal's side.
-
-Your current area is read from the location line in Hypixel's sidebar.
+- **First quest after logging in:** no warp, since there's no last quest yet.
 
 > ⚠️ The mod sends the warp by itself, which Hypixel may treat as a macro.
 
@@ -131,7 +129,7 @@ from farther away.
 ### 3. Add the mods
 Put **both** of these files into your `mods` folder:
 - `fabric-api-....jar`
-- `dist/trevor-tracker-1.4.1+26.1.2.jar` (the ready-built jar in this repo)
+- `dist/trevor-tracker-1.4.2+26.1.2.jar` (the ready-built jar in this repo)
 
 Where the `mods` folder is:
 - **Windows:** press `Win + R`, type `%appdata%\.minecraft\mods` and press Enter
@@ -152,7 +150,7 @@ You only need this if you change the code.
 2. Open a terminal in this folder and run:
    - Windows: `gradlew.bat build`
    - Mac/Linux: `./gradlew build`
-3. The mod appears in `build/libs/trevor-tracker-1.4.1.jar`.
+3. The mod appears in `build/libs/trevor-tracker-1.4.2.jar`.
 
 To work on it in an editor, open this folder in **IntelliJ IDEA** (Community is free).
 It picks up the Gradle project automatically.
