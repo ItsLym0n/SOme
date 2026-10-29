@@ -1,4 +1,4 @@
-# Trevor Tracker
+# ULTIMATE LYMON's TREVOR ESP SIMULATOR
 
 A Fabric mod for **Minecraft 26.1.2** that guides you to the animal Trevor asks you
 to hunt in the Mushroom Desert on Hypixel SkyBlock.
@@ -36,7 +36,7 @@ to hunt in the Mushroom Desert on Hypixel SkyBlock.
 | `/trevortracker clear` | Forget the current hunt |
 
 You can rebind the keys with the **Keybinds...** button in the settings, or in
-Options → Controls → Key Binds → *Trevor Tracker*.
+Options → Controls → Key Binds → *ULTIMATE LYMON's TREVOR ESP SIMULATOR*.
 
 ## Auto call Trevor (Booster Cookie)
 
@@ -101,7 +101,7 @@ from farther away.
 ### 3. Add the mods
 Put **both** of these files into your `mods` folder:
 - `fabric-api-....jar`
-- `dist/trevor-tracker-1.3.0+26.1.2.jar` (the ready-built jar in this repo)
+- `dist/trevor-tracker-1.3.1+26.1.2.jar` (the ready-built jar in this repo)
 
 Where the `mods` folder is:
 - **Windows:** press `Win + R`, type `%appdata%\.minecraft\mods` and press Enter
@@ -122,7 +122,7 @@ You only need this if you change the code.
 2. Open a terminal in this folder and run:
    - Windows: `gradlew.bat build`
    - Mac/Linux: `./gradlew build`
-3. The mod appears in `build/libs/trevor-tracker-1.3.0.jar`.
+3. The mod appears in `build/libs/trevor-tracker-1.3.1.jar`.
 
 To work on it in an editor, open this folder in **IntelliJ IDEA** (Community is free).
 It picks up the Gradle project automatically.

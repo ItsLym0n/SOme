@@ -28,6 +28,16 @@ processResources {
 	}
 }
 
+// Put the version into the keybind category name too
+processClientResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("assets/trevortracker/lang/*.json") {
+		expand "version": version
+	}
+}
+
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
 }

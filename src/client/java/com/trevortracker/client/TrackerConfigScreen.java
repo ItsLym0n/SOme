@@ -27,7 +27,7 @@ public class TrackerConfigScreen extends Screen {
 	private int top;
 
 	public TrackerConfigScreen(@Nullable Screen parent) {
-		super(Component.literal("Trevor Tracker"));
+		super(Component.literal(TrevorTrackerClient.DISPLAY_NAME));
 		this.parent = parent;
 	}
 

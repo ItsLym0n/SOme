@@ -21,7 +21,7 @@ public final class TrackerHud {
 		String callHint = TrevorTrackerClient.CALLER.getHint();
 		if (!tracker.isActive()) {
 			if (callHint != null) {
-				graphics.text(mc.font, "Trevor Tracker [" + TrevorTrackerClient.CONFIG.mode + "]", 4, 4, 0xFFAAAAAA, true);
+				graphics.text(mc.font, TrevorTrackerClient.DISPLAY_NAME + " [" + TrevorTrackerClient.CONFIG.mode + "]", 4, 4, 0xFFAAAAAA, true);
 				graphics.text(mc.font, callHint, 4, 15, 0xFF55FFFF, true);
 			}
 			return;
@@ -62,7 +62,7 @@ public final class TrackerHud {
 		Font font = mc.font;
 		int x = 4;
 		int y = 4;
-		graphics.text(font, "Trevor Tracker [" + TrevorTrackerClient.CONFIG.mode + "]", x, y, 0xFFAAAAAA, true);
+		graphics.text(font, TrevorTrackerClient.DISPLAY_NAME + " [" + TrevorTrackerClient.CONFIG.mode + "]", x, y, 0xFFAAAAAA, true);
 		graphics.text(font, what, x, y + 11, color, true);
 		String status = arrow + " " + distance + "m " + compass + height;
 		if (tracker.getTarget() == null) status += "  - get closer to load the mob";

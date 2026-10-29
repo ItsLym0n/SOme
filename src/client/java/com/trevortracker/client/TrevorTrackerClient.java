@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -28,6 +29,9 @@ import static net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal;
 public class TrevorTrackerClient implements ClientModInitializer {
 	public static final String MOD_ID = "trevortracker";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final String VERSION = FabricLoader.getInstance().getModContainer(MOD_ID)
+			.map(mod -> mod.getMetadata().getVersion().getFriendlyString()).orElse("?");
+	public static final String DISPLAY_NAME = "ULTIMATE LYMON's TREVOR ESP SIMULATOR [" + VERSION + "]";
 	public static final HuntTracker TRACKER = new HuntTracker();
 	public static final TrevorCaller CALLER = new TrevorCaller();
 	public static TrackerConfig CONFIG;
@@ -104,7 +108,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 				})
 				.then(literal("help").executes(ctx -> {
 					ctx.getSource().sendFeedback(Component.literal(
-							"§6Trevor Tracker§r - enabled: " + CONFIG.enabled + ", mode: " + CONFIG.mode + "\n"
+							"§6" + DISPLAY_NAME + "§r - enabled: " + CONFIG.enabled + ", mode: " + CONFIG.mode + "\n"
 									+ "§7/trevortracker  (opens settings: colors, thickness, glow, keybinds)\n"
 									+ "/trevortracker mode <path|line|both>\n"
 									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
@@ -185,7 +189,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 
 	private static void say(Minecraft mc, String text) {
 		if (mc.player != null) {
-			mc.player.sendSystemMessage(Component.literal("[Trevor Tracker] ").withStyle(ChatFormatting.GOLD)
+			mc.player.sendSystemMessage(Component.literal("[" + DISPLAY_NAME + "] ").withStyle(ChatFormatting.GOLD)
 					.append(Component.literal(text).withStyle(ChatFormatting.WHITE)));
 		}
 	}

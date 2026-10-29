@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "trevortracker",
 	"version": "${version}",
-	"name": "Trevor Tracker",
+	"name": "ULTIMATE LYMON's TREVOR ESP SIMULATOR [${version}]",
 	"description": "Guides you to Trevor's hunted animal in the Mushroom Desert on Hypixel SkyBlock. Press O or use /trevortracker settings to change colors.",
 	"authors": [
 		"melvaro"
