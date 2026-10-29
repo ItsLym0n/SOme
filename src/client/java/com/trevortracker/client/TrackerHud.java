@@ -19,6 +19,7 @@ public final class TrackerHud {
 		Minecraft mc = Minecraft.getInstance();
 		if (!TrevorTrackerClient.CONFIG.enabled || mc.player == null || mc.options.hideGui) return;
 		String callHint = TrevorTrackerClient.CALLER.getHint();
+		if (callHint == null) callHint = TrevorTrackerClient.WARPER.getHint();
 		if (!tracker.isActive()) {
 			if (callHint != null) {
 				graphics.text(mc.font, TrevorTrackerClient.DISPLAY_NAME + " [" + TrevorTrackerClient.CONFIG.mode + "]", 4, 4, 0xFFAAAAAA, true);
@@ -67,5 +68,6 @@ public final class TrackerHud {
 		String status = arrow + " " + distance + "m " + compass + height;
 		if (tracker.getTarget() == null) status += "  - get closer to load the mob";
 		graphics.text(font, status, x, y + 22, 0xFFFFFFFF, true);
+		if (callHint != null) graphics.text(font, callHint, x, y + 33, 0xFF55FFFF, true);
 	}
 }

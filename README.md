@@ -32,6 +32,7 @@ to hunt in the Mushroom Desert on Hypixel SkyBlock.
 | `/trevortracker area Oasis` | Set the area by hand if you missed Trevor's message |
 | `/trevortracker autocall [on\|off]` | Call Trevor after a kill (see below) |
 | `/trevortracker autoaccept [on\|off]` | Click [YES] on Trevor's prompt |
+| `/trevortracker autowarp [on\|off]` | Warp with your travel scrolls when Trevor gives a quest |
 | `/trevortracker early <0-10>` | Seconds before the cooldown ends to call (default 3) |
 | `/trevortracker callcommand call Trevor` | The command used to call Trevor |
 | `/trevortracker clear` | Forget the current hunt |
@@ -60,6 +61,22 @@ calls and when you talk to Trevor in person.
 
 > ⚠️ The mod sends these commands by itself, which Hypixel may treat as a macro.
 
+## Auto warp (travel scrolls)
+
+Turn on **Auto Warp** in the settings or with `/trevortracker autowarp on`. When Trevor
+gives you a quest, the mod warps you toward the area about a second later:
+
+| Area | Command |
+|---|---|
+| Mushroom Gorge, Glowing Mushroom Cave, Overgrown Mushroom Cave | `/warp glowing` |
+| Desert Settlement, Oasis, Desert Mountain | `/warp desert` |
+
+You need the *Travel Scroll to the Glowing Mushroom Caves* and *Travel Scroll to the
+Mushroom Desert* unlocked. It warps once per quest, and not at all if you're already
+within 60 blocks of the area.
+
+> ⚠️ The mod sends the warp by itself, which Hypixel may treat as a macro.
+
 ## Settings
 
 Press `O` or type `/trevortracker` to open the settings. They're saved to `config/trevortracker.json`.
@@ -77,7 +94,7 @@ sets how fast it moves.
 
 Buttons below that: **Guide** (path/line/both), **Glow (thru walls)** on/off,
 **Box** on/off. At the bottom: **Enabled**, **Rainbow Speed**, **Keybinds...**, **Lines thru walls**,
-then **Auto Call Trevor**, **Call Early (s)**, the call command box, **Auto Accept** and **Done**.
+then **Auto Call Trevor**, **Call Early (s)**, the call command box, **Auto Accept**, **Done** and **Auto Warp**.
 
 **Glow (thru walls)** outlines the animal itself through walls. **Lines thru walls**
 (on by default) draws the path, tracer line and box on top of blocks too. Turn it off
@@ -107,7 +124,7 @@ from farther away.
 ### 3. Add the mods
 Put **both** of these files into your `mods` folder:
 - `fabric-api-....jar`
-- `dist/trevor-tracker-1.3.2+26.1.2.jar` (the ready-built jar in this repo)
+- `dist/trevor-tracker-1.4.0+26.1.2.jar` (the ready-built jar in this repo)
 
 Where the `mods` folder is:
 - **Windows:** press `Win + R`, type `%appdata%\.minecraft\mods` and press Enter
@@ -128,7 +145,7 @@ You only need this if you change the code.
 2. Open a terminal in this folder and run:
    - Windows: `gradlew.bat build`
    - Mac/Linux: `./gradlew build`
-3. The mod appears in `build/libs/trevor-tracker-1.3.2.jar`.
+3. The mod appears in `build/libs/trevor-tracker-1.4.0.jar`.
 
 To work on it in an editor, open this folder in **IntelliJ IDEA** (Community is free).
 It picks up the Gradle project automatically.
@@ -142,6 +159,7 @@ It picks up the Gradle project automatically.
 | `TrackerConfigScreen.java` | The settings screen |
 | `mixin/MinecraftMixin.java`, `mixin/EntityMixin.java` | Make the hunted animal glow in your color |
 | `TrevorCaller.java` | Calls Trevor after a kill, just before the cooldown ends, and accepts his prompt |
+| `TrevorWarper.java` | Warps with travel scrolls when a quest starts |
 | `HuntTracker.java` | Reads chat, finds the animal, runs the pathfinder |
 | `PathFinder.java` | A* search for a walkable route, spread over several ticks |
 | `GuideRenderer.java` | Draws the path, tracer line and boxes |

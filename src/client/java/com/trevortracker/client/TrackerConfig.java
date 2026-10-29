@@ -57,6 +57,8 @@ public class TrackerConfig {
 	public int callEarlySeconds = 3;
 	/** Click [YES] on Trevor's "Click an option" prompt. */
 	public boolean autoAccept = false;
+	/** Use /warp glowing or /warp desert (travel scrolls) when Trevor gives a quest. */
+	public boolean autoWarp = false;
 
 	/**
 	 * Colors take an {@code offset} (0-1) along the line, so a rainbow line shows every hue

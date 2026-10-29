@@ -34,6 +34,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 	public static final String DISPLAY_NAME = "ULTIMATE LYMON's TREVOR ESP SIMULATOR [" + VERSION + "]";
 	public static final HuntTracker TRACKER = new HuntTracker();
 	public static final TrevorCaller CALLER = new TrevorCaller();
+	public static final TrevorWarper WARPER = new TrevorWarper();
 	public static TrackerConfig CONFIG;
 
 	private static KeyMapping toggleKey;
@@ -57,6 +58,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 			if (overlay) return;
 			TRACKER.onChat(message);
 			CALLER.onChat(message);
+			WARPER.onChat(message);
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
@@ -80,6 +82,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 			}
 			TRACKER.tick(mc);
 			CALLER.tick(mc);
+			WARPER.tick(mc);
 		});
 
 		LevelRenderEvents.BEFORE_GIZMOS.register(context -> GuideRenderer.render(TRACKER));
@@ -114,6 +117,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
 									+ "/trevortracker autocall [on|off]  (call Trevor after a kill)\n"
 									+ "/trevortracker autoaccept [on|off]  (click [YES] on Trevor's prompt)\n"
+									+ "/trevortracker autowarp [on|off]  (/warp glowing or /warp desert)\n"
 									+ "/trevortracker early <0-10>  (seconds before the cooldown ends)\n"
 									+ "/trevortracker callcommand <command>\n"
 									+ "/trevortracker clear"));
@@ -162,6 +166,10 @@ public class TrevorTrackerClient implements ClientModInitializer {
 						.executes(ctx -> setAutoAccept(ctx.getSource(), !CONFIG.autoAccept))
 						.then(literal("on").executes(ctx -> setAutoAccept(ctx.getSource(), true)))
 						.then(literal("off").executes(ctx -> setAutoAccept(ctx.getSource(), false))))
+				.then(literal("autowarp")
+						.executes(ctx -> setAutoWarp(ctx.getSource(), !CONFIG.autoWarp))
+						.then(literal("on").executes(ctx -> setAutoWarp(ctx.getSource(), true)))
+						.then(literal("off").executes(ctx -> setAutoWarp(ctx.getSource(), false))))
 				.then(literal("early").then(argument("seconds", IntegerArgumentType.integer(0, 10))
 						.executes(ctx -> {
 							CONFIG.callEarlySeconds = IntegerArgumentType.getInteger(ctx, "seconds");
@@ -196,6 +204,13 @@ public class TrevorTrackerClient implements ClientModInitializer {
 		CONFIG.autoAccept = on;
 		CONFIG.save();
 		source.sendFeedback(Component.literal("Auto accept: " + (on ? "§aON" : "§cOFF")));
+		return 1;
+	}
+
+	private static int setAutoWarp(FabricClientCommandSource source, boolean on) {
+		CONFIG.autoWarp = on;
+		CONFIG.save();
+		source.sendFeedback(Component.literal("Auto warp: " + (on ? "§aON" : "§cOFF")));
 		return 1;
 	}
 

@@ -30,7 +30,7 @@ public class HuntTracker {
 		}
 	}
 
-	private static final Pattern QUEST = Pattern.compile(
+	static final Pattern QUEST = Pattern.compile(
 			"\\[NPC] Trevor: You can find your (\\w+) animal near (?:the )?(.+?)\\.?$");
 	private static final String MOB_DIED = "Return to the Trapper soon to get a new animal to hunt!";
 	private static final String OUT_OF_TIME = "You ran out of time and the animal disappeared!";

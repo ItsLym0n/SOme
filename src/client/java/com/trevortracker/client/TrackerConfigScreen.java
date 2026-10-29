@@ -144,6 +144,16 @@ public class TrackerConfigScreen extends Screen {
 				.build());
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
+		addRenderableWidget(Button.builder(toggleLabel("Auto Warp", config.autoWarp), b -> {
+			config.autoWarp = !config.autoWarp;
+			b.setMessage(toggleLabel("Auto Warp", config.autoWarp));
+		}).bounds(columnX[2], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal(
+						"When Trevor gives a quest, warp with your travel scrolls:\n"
+								+ "Gorge / Glowing / Overgrown caves: /warp glowing\n"
+								+ "Settlement / Oasis / Mountain: /warp desert\n"
+								+ "Skipped if you're already near the area.")))
+				.build());
 	}
 
 	private Component modeLabel() {
