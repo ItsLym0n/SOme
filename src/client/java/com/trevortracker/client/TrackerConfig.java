@@ -55,6 +55,8 @@ public class TrackerConfig {
 	public String callCommand = "call Trevor";
 	/** Seconds before Trevor's 20 second cooldown ends to call him. */
 	public int callEarlySeconds = 3;
+	/** Click [YES] on Trevor's "Click an option" prompt. */
+	public boolean autoAccept = false;
 
 	/**
 	 * Colors take an {@code offset} (0-1) along the line, so a rainbow line shows every hue

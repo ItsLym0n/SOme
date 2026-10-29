@@ -113,6 +113,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 									+ "/trevortracker mode <path|line|both>\n"
 									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
 									+ "/trevortracker autocall [on|off]  (call Trevor after a kill)\n"
+									+ "/trevortracker autoaccept [on|off]  (click [YES] on Trevor's prompt)\n"
 									+ "/trevortracker early <0-10>  (seconds before the cooldown ends)\n"
 									+ "/trevortracker callcommand <command>\n"
 									+ "/trevortracker clear"));
@@ -157,6 +158,10 @@ public class TrevorTrackerClient implements ClientModInitializer {
 						.executes(ctx -> setAutoCall(ctx.getSource(), !CONFIG.autoCall))
 						.then(literal("on").executes(ctx -> setAutoCall(ctx.getSource(), true)))
 						.then(literal("off").executes(ctx -> setAutoCall(ctx.getSource(), false))))
+				.then(literal("autoaccept")
+						.executes(ctx -> setAutoAccept(ctx.getSource(), !CONFIG.autoAccept))
+						.then(literal("on").executes(ctx -> setAutoAccept(ctx.getSource(), true)))
+						.then(literal("off").executes(ctx -> setAutoAccept(ctx.getSource(), false))))
 				.then(literal("early").then(argument("seconds", IntegerArgumentType.integer(0, 10))
 						.executes(ctx -> {
 							CONFIG.callEarlySeconds = IntegerArgumentType.getInteger(ctx, "seconds");
@@ -184,6 +189,13 @@ public class TrevorTrackerClient implements ClientModInitializer {
 		CONFIG.autoCall = on;
 		CONFIG.save();
 		source.sendFeedback(Component.literal("Auto call Trevor: " + (on ? "§aON" : "§cOFF")));
+		return 1;
+	}
+
+	private static int setAutoAccept(FabricClientCommandSource source, boolean on) {
+		CONFIG.autoAccept = on;
+		CONFIG.save();
+		source.sendFeedback(Component.literal("Auto accept: " + (on ? "§aON" : "§cOFF")));
 		return 1;
 	}
 

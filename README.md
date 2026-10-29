@@ -31,6 +31,7 @@ to hunt in the Mushroom Desert on Hypixel SkyBlock.
 | `/trevortracker mode path\|line\|both` | Set the guide mode |
 | `/trevortracker area Oasis` | Set the area by hand if you missed Trevor's message |
 | `/trevortracker autocall [on\|off]` | Call Trevor after a kill (see below) |
+| `/trevortracker autoaccept [on\|off]` | Click [YES] on Trevor's prompt |
 | `/trevortracker early <0-10>` | Seconds before the cooldown ends to call (default 3) |
 | `/trevortracker callcommand call Trevor` | The command used to call Trevor |
 | `/trevortracker clear` | Forget the current hunt |
@@ -47,12 +48,17 @@ Turn on **Auto Call Trevor** in the settings or with `/trevortracker autocall on
   cooldown ends (counted from when he gave you the quest). If the cooldown is already
   over, it calls right away.
 - If the hunt **runs out of time**, it doesn't call.
-- If Trevor doesn't give a new quest, it tries again every 5 seconds, 3 calls at most.
+- As soon as Trevor answers (his YES/NO prompt or any message from him), it stops
+  calling. If he doesn't answer at all, it tries again every 5 seconds, 3 calls at most.
 - The HUD shows *Calling Trevor in 2s* while it waits.
 
 Change the timing with the **Call Early** slider or `/trevortracker early <seconds>`.
 
-> ⚠️ The mod sends the command by itself, which Hypixel may treat as a macro.
+**Auto Accept** (settings button, or `/trevortracker autoaccept on`) clicks **[YES]** on
+Trevor's "Click an option" prompt for you, half a second after it shows up. It works for
+calls and when you talk to Trevor in person.
+
+> ⚠️ The mod sends these commands by itself, which Hypixel may treat as a macro.
 
 ## Settings
 
@@ -71,7 +77,7 @@ sets how fast it moves.
 
 Buttons below that: **Guide** (path/line/both), **Glow (thru walls)** on/off,
 **Box** on/off. At the bottom: **Enabled**, **Rainbow Speed**, **Keybinds...**, **Lines thru walls**,
-then **Auto Call Trevor**, **Call Early (s)**, the call command box, and **Done**.
+then **Auto Call Trevor**, **Call Early (s)**, the call command box, **Auto Accept** and **Done**.
 
 **Glow (thru walls)** outlines the animal itself through walls. **Lines thru walls**
 (on by default) draws the path, tracer line and box on top of blocks too. Turn it off
@@ -101,7 +107,7 @@ from farther away.
 ### 3. Add the mods
 Put **both** of these files into your `mods` folder:
 - `fabric-api-....jar`
-- `dist/trevor-tracker-1.3.1+26.1.2.jar` (the ready-built jar in this repo)
+- `dist/trevor-tracker-1.3.2+26.1.2.jar` (the ready-built jar in this repo)
 
 Where the `mods` folder is:
 - **Windows:** press `Win + R`, type `%appdata%\.minecraft\mods` and press Enter
@@ -122,7 +128,7 @@ You only need this if you change the code.
 2. Open a terminal in this folder and run:
    - Windows: `gradlew.bat build`
    - Mac/Linux: `./gradlew build`
-3. The mod appears in `build/libs/trevor-tracker-1.3.1.jar`.
+3. The mod appears in `build/libs/trevor-tracker-1.3.2.jar`.
 
 To work on it in an editor, open this folder in **IntelliJ IDEA** (Community is free).
 It picks up the Gradle project automatically.
@@ -135,7 +141,7 @@ It picks up the Gradle project automatically.
 | `TrackerConfig.java` | Saved settings (colors, thickness, toggles) |
 | `TrackerConfigScreen.java` | The settings screen |
 | `mixin/MinecraftMixin.java`, `mixin/EntityMixin.java` | Make the hunted animal glow in your color |
-| `TrevorCaller.java` | Calls Trevor after a kill, just before the cooldown ends |
+| `TrevorCaller.java` | Calls Trevor after a kill, just before the cooldown ends, and accepts his prompt |
 | `HuntTracker.java` | Reads chat, finds the animal, runs the pathfinder |
 | `PathFinder.java` | A* search for a walkable route, spread over several ticks |
 | `GuideRenderer.java` | Draws the path, tracer line and boxes |

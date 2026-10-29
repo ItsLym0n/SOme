@@ -135,6 +135,13 @@ public class TrackerConfigScreen extends Screen {
 		addRenderableWidget(commandBox);
 
 		y += ROW + 6;
+		addRenderableWidget(Button.builder(toggleLabel("Auto Accept", config.autoAccept), b -> {
+			config.autoAccept = !config.autoAccept;
+			b.setMessage(toggleLabel("Auto Accept", config.autoAccept));
+		}).bounds(columnX[0], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal(
+						"Click [YES] on Trevor's prompt for you.\nThe mod does this by itself, which Hypixel may treat as a macro.")))
+				.build());
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
 	}
