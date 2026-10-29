@@ -152,7 +152,7 @@ public class TrackerConfigScreen extends Screen {
 						"When Trevor gives a quest, warp with your travel scrolls:\n"
 								+ "Gorge / Glowing / Overgrown caves: /warp glowing\n"
 								+ "Settlement / Oasis / Mountain: /warp desert\n"
-								+ "Skipped if you're already near the area.")))
+								+ "No warp if you're already on that side, or between Desert Mountain and Mushroom Gorge.")))
 				.build());
 	}
 
