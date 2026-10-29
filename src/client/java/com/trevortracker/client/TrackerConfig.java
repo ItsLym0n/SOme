@@ -50,6 +50,12 @@ public class TrackerConfig {
 	/** 1 = slow, 10 = fast. */
 	public int rainbowSpeed = 3;
 
+	// Calling Trevor for the next quest (needs a Booster Cookie)
+	public boolean autoCall = false;
+	public String callCommand = "call Trevor";
+	/** Seconds before Trevor's 20 second cooldown ends to call him. */
+	public int callEarlySeconds = 3;
+
 	/**
 	 * Colors take an {@code offset} (0-1) along the line, so a rainbow line shows every hue
 	 * at once and the colors flow along it. Solid colors ignore the offset.
@@ -88,6 +94,7 @@ public class TrackerConfig {
 				TrackerConfig config = GSON.fromJson(reader, TrackerConfig.class);
 				if (config != null) {
 					if (config.mode == null) config.mode = HuntTracker.Mode.PATH;
+					if (config.callCommand == null || config.callCommand.isBlank()) config.callCommand = "call Trevor";
 					return config;
 				}
 			} catch (Exception e) {

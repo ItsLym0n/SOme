@@ -6,6 +6,8 @@ import java.util.function.IntSupplier;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.options.controls.KeyBindsScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -34,7 +36,7 @@ public class TrackerConfigScreen extends Screen {
 		int totalWidth = COLUMN_WIDTH * 3 + GAP * 2;
 		int left = width / 2 - totalWidth / 2;
 		columnX = new int[]{left, left + COLUMN_WIDTH + GAP, left + (COLUMN_WIDTH + GAP) * 2};
-		top = Math.max(32, (height - ROW * 9) / 2 + 14);
+		top = Math.max(32, (height - ROW * 10) / 2 + 14);
 
 		// Walking path
 		int x = columnX[0];
@@ -112,6 +114,27 @@ public class TrackerConfigScreen extends Screen {
 			config.linesThroughWalls = !config.linesThroughWalls;
 			b.setMessage(toggleLabel("Lines thru walls", config.linesThroughWalls));
 		}).bounds(columnX[0], y, COLUMN_WIDTH, 20).build());
+
+		// Calling Trevor after a kill
+		y += ROW + 6;
+		addRenderableWidget(Button.builder(toggleLabel("Auto Call Trevor", config.autoCall), b -> {
+			config.autoCall = !config.autoCall;
+			b.setMessage(toggleLabel("Auto Call Trevor", config.autoCall));
+		}).bounds(columnX[0], y, COLUMN_WIDTH, 20)
+				.tooltip(Tooltip.create(Component.literal(
+						"After the animal dies, call Trevor (Booster Cookie needed) a few seconds before "
+								+ "his cooldown ends.\nThe mod sends the command by itself, which Hypixel may treat as a macro.")))
+				.build());
+		addRenderableWidget(new IntSlider(columnX[1], y, "Call Early (s)", 0, 10,
+				() -> config.callEarlySeconds, v -> config.callEarlySeconds = v));
+		EditBox commandBox = new EditBox(font, columnX[2], y, COLUMN_WIDTH, 20, Component.literal("Call command"));
+		commandBox.setMaxLength(64);
+		commandBox.setValue(config.callCommand);
+		commandBox.setResponder(v -> config.callCommand = v.trim());
+		commandBox.setTooltip(Tooltip.create(Component.literal("Command used to call Trevor")));
+		addRenderableWidget(commandBox);
+
+		y += ROW + 6;
 		addRenderableWidget(Button.builder(Component.literal("Done"), b -> onClose())
 				.bounds(columnX[1], y, COLUMN_WIDTH, 20).build());
 	}

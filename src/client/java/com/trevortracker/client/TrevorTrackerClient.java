@@ -1,6 +1,7 @@
 package com.trevortracker.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ClientModInitializer;
@@ -28,6 +29,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 	public static final String MOD_ID = "trevortracker";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final HuntTracker TRACKER = new HuntTracker();
+	public static final TrevorCaller CALLER = new TrevorCaller();
 	public static TrackerConfig CONFIG;
 
 	private static KeyMapping toggleKey;
@@ -48,7 +50,9 @@ public class TrevorTrackerClient implements ClientModInitializer {
 				"key.trevortracker.settings", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, category));
 
 		ClientReceiveMessageEvents.GAME.register((message, overlay) -> {
-			if (!overlay) TRACKER.onChat(message);
+			if (overlay) return;
+			TRACKER.onChat(message);
+			CALLER.onChat(message);
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
@@ -71,6 +75,7 @@ public class TrevorTrackerClient implements ClientModInitializer {
 				mc.setScreen(new TrackerConfigScreen(mc.screen));
 			}
 			TRACKER.tick(mc);
+			CALLER.tick(mc);
 		});
 
 		LevelRenderEvents.BEFORE_GIZMOS.register(context -> GuideRenderer.render(TRACKER));
@@ -103,6 +108,9 @@ public class TrevorTrackerClient implements ClientModInitializer {
 									+ "§7/trevortracker  (opens settings: colors, thickness, glow, keybinds)\n"
 									+ "/trevortracker mode <path|line|both>\n"
 									+ "/trevortracker area <name>  (if you missed Trevor's message)\n"
+									+ "/trevortracker autocall [on|off]  (call Trevor after a kill)\n"
+									+ "/trevortracker early <0-10>  (seconds before the cooldown ends)\n"
+									+ "/trevortracker callcommand <command>\n"
 									+ "/trevortracker clear"));
 					return 1;
 				}))
@@ -141,11 +149,38 @@ public class TrevorTrackerClient implements ClientModInitializer {
 					openSettingsNextTick = true;
 					return 1;
 				}))
+				.then(literal("autocall")
+						.executes(ctx -> setAutoCall(ctx.getSource(), !CONFIG.autoCall))
+						.then(literal("on").executes(ctx -> setAutoCall(ctx.getSource(), true)))
+						.then(literal("off").executes(ctx -> setAutoCall(ctx.getSource(), false))))
+				.then(literal("early").then(argument("seconds", IntegerArgumentType.integer(0, 10))
+						.executes(ctx -> {
+							CONFIG.callEarlySeconds = IntegerArgumentType.getInteger(ctx, "seconds");
+							CONFIG.save();
+							ctx.getSource().sendFeedback(Component.literal(
+									"Calling Trevor " + CONFIG.callEarlySeconds + "s before the cooldown ends"));
+							return 1;
+						})))
+				.then(literal("callcommand").then(argument("command", StringArgumentType.greedyString())
+						.executes(ctx -> {
+							CONFIG.callCommand = StringArgumentType.getString(ctx, "command").trim();
+							CONFIG.save();
+							ctx.getSource().sendFeedback(Component.literal(
+									"Call command: /" + CONFIG.callCommand.replaceFirst("^/", "")));
+							return 1;
+						})))
 				.then(literal("clear").executes(ctx -> {
 					TRACKER.clear();
 					ctx.getSource().sendFeedback(Component.literal("Hunt cleared"));
 					return 1;
 				}));
+	}
+
+	private static int setAutoCall(FabricClientCommandSource source, boolean on) {
+		CONFIG.autoCall = on;
+		CONFIG.save();
+		source.sendFeedback(Component.literal("Auto call Trevor: " + (on ? "§aON" : "§cOFF")));
+		return 1;
 	}
 
 	private static void say(Minecraft mc, String text) {

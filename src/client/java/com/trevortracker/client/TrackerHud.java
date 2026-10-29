@@ -18,7 +18,14 @@ public final class TrackerHud {
 	public static void render(HuntTracker tracker, GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
 		Minecraft mc = Minecraft.getInstance();
 		if (!TrevorTrackerClient.CONFIG.enabled || mc.player == null || mc.options.hideGui) return;
-		if (!tracker.isActive()) return;
+		String callHint = TrevorTrackerClient.CALLER.getHint();
+		if (!tracker.isActive()) {
+			if (callHint != null) {
+				graphics.text(mc.font, "Trevor Tracker [" + TrevorTrackerClient.CONFIG.mode + "]", 4, 4, 0xFFAAAAAA, true);
+				graphics.text(mc.font, callHint, 4, 15, 0xFF55FFFF, true);
+			}
+			return;
+		}
 
 		float partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
 		Vec3 goal = tracker.getGoalPos(partialTick);
