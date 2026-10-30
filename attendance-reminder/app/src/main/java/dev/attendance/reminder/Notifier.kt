@@ -14,6 +14,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -73,6 +74,8 @@ object Notifier {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
+            .setColor(ContextCompat.getColor(context, R.color.union_blue))
+            .setLargeIcon(largeIcon(context))
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -121,6 +124,12 @@ object Notifier {
     }
 
     private fun notificationId(classId: String) = classId.hashCode()
+
+    /** The home screen's "Open UNION" tile art, shown on the right of the notification. */
+    private fun largeIcon(context: Context): android.graphics.Bitmap? {
+        val size = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
+        return ContextCompat.getDrawable(context, R.drawable.tile_union)?.toBitmap(size, size)
+    }
 
     /** Fake reminder for the "Send test notification" button. */
     fun showTest(context: Context) {

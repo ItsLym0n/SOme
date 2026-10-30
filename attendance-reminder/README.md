@@ -32,6 +32,8 @@ For every class in your weekly timetable:
 
 ### Priority notifications
 
+- UNION-blue accent, a clipboard-check icon in the status bar, and the "Open UNION" tile
+  art as the notification picture.
 - High-importance channel: pops up as a heads-up banner, with sound and vibration, and is
   shown in full on the lock screen.
 - Marked as an alarm-category, max-priority notification that is pinned (ongoing) until
@@ -42,7 +44,7 @@ For every class in your weekly timetable:
 
 ## Install
 
-1. Download [`dist/re-union-1.3.1.apk`](dist/re-union-1.3.1.apk) to
+1. Download [`dist/re-union-1.4.0.apk`](dist/re-union-1.4.0.apk) to
    your Android phone (Android 8.0 or newer).
 2. Open it and allow "Install unknown apps" when asked.
 3. Open **RE-Union** and allow notifications. Tap your greeting to set your
