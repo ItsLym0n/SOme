@@ -18,11 +18,13 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
+import java.io.IOException
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -42,6 +44,16 @@ class MainActivity : AppCompatActivity() {
     private val notificationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { refresh() }
 
+    private val exportFile =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+            if (uri != null) exportTo(uri)
+        }
+
+    private val importFile =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) importFrom(uri)
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -54,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         Notifier.createChannel(this)
 
         findViewById<View>(R.id.add_button).setOnClickListener { editClass(null) }
-        findViewById<View>(R.id.import_button).setOnClickListener { importTimetable() }
+        findViewById<View>(R.id.import_button).setOnClickListener(::showScheduleMenu)
         findViewById<View>(R.id.open_union_button).setOnClickListener {
             startActivity(Notifier.unionIntent(this))
         }
@@ -248,6 +260,64 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showScheduleMenu(anchor: View) {
+        val menu = PopupMenu(this, anchor)
+        menu.menu.add(0, MENU_PASTE, 0, R.string.import_timetable)
+        menu.menu.add(0, MENU_IMPORT_FILE, 1, R.string.import_file)
+        val hasClasses = store.classes().isNotEmpty()
+        menu.menu.add(0, MENU_EXPORT_FILE, 2, R.string.export_file).isEnabled = hasClasses
+        menu.menu.add(0, MENU_SHARE, 3, R.string.share_schedule).isEnabled = hasClasses
+        menu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                MENU_PASTE -> importTimetable()
+                MENU_IMPORT_FILE -> importFile.launch(arrayOf("application/json", "text/*", "application/octet-stream"))
+                MENU_EXPORT_FILE -> exportFile.launch("class-schedule.json")
+                MENU_SHARE -> shareSchedule()
+            }
+            true
+        }
+        menu.show()
+    }
+
+    private fun exportTo(uri: Uri) {
+        try {
+            contentResolver.openOutputStream(uri, "wt")!!.use {
+                it.write(ScheduleFile.toJson(store.classes()).toByteArray())
+            }
+            Toast.makeText(this, R.string.export_done, Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            Toast.makeText(this, getString(R.string.file_error, e.message), Toast.LENGTH_LONG).show()
+        } catch (e: NullPointerException) {
+            Toast.makeText(this, getString(R.string.file_error, e.message), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun importFrom(uri: Uri) {
+        val text = try {
+            contentResolver.openInputStream(uri)!!.use { it.readBytes().toString(Charsets.UTF_8) }
+        } catch (e: IOException) {
+            Toast.makeText(this, getString(R.string.file_error, e.message), Toast.LENGTH_LONG).show()
+            return
+        } catch (e: NullPointerException) {
+            Toast.makeText(this, getString(R.string.file_error, e.message), Toast.LENGTH_LONG).show()
+            return
+        }
+        val result = ScheduleFile.read(text)
+        if (result.classes.isEmpty()) {
+            Toast.makeText(this, R.string.import_none, Toast.LENGTH_LONG).show()
+        } else {
+            confirmImport(result)
+        }
+    }
+
+    private fun shareSchedule() {
+        val send = Intent(Intent.ACTION_SEND)
+            .setType("text/plain")
+            .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject))
+            .putExtra(Intent.EXTRA_TEXT, ScheduleFile.toText(store.classes()))
+        startActivity(Intent.createChooser(send, getString(R.string.share_schedule)))
+    }
+
     private fun importTimetable() {
         val view = layoutInflater.inflate(R.layout.dialog_import, null)
         val input = view.findViewById<EditText>(R.id.import_input)
@@ -307,6 +377,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private companion object {
+        const val MENU_PASTE = 1
+        const val MENU_IMPORT_FILE = 2
+        const val MENU_EXPORT_FILE = 3
+        const val MENU_SHARE = 4
         val TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     }
 }

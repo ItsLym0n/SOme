@@ -13,7 +13,7 @@
 
     <string name="test_notification">Test notification</string>
     <string name="schedule">Weekly schedule</string>
-    <string name="empty">No classes yet. Tap \"Paste timetable\" to import your schedule, or \"Add class\" to enter one by hand.</string>
+    <string name="empty">No classes yet. Tap \"Import / Export\" to paste or import your schedule, or \"Add class\" to enter one by hand.</string>
     <string name="class_time">%1$s · %2$s–%3$s</string>
     <string name="mark_attended">Checked in?</string>
     <string name="attended_today">Checked in ✓</string>
@@ -31,7 +31,14 @@
     <string name="error_name">Enter a class name</string>
     <string name="error_time">Start and end time can\'t be the same</string>
 
+    <string name="import_export">Import / Export</string>
     <string name="import_timetable">Paste timetable</string>
+    <string name="import_file">Import from file</string>
+    <string name="export_file">Export to file</string>
+    <string name="share_schedule">Share schedule</string>
+    <string name="share_subject">My class schedule</string>
+    <string name="export_done">Schedule exported</string>
+    <string name="file_error">Couldn\'t read or write the file: %1$s</string>
     <string name="import_hint">Paste your schedule here, e.g.\n\nSenin 08:00-10:30 Dasar Pemrograman\nRabu 13.00 - 15.30 Kalkulus</string>
     <string name="import_paste_clipboard">Paste from clipboard</string>
     <string name="import_read">Read schedule</string>

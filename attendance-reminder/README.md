@@ -31,7 +31,7 @@ For every class in your weekly timetable:
 
 ## Install
 
-1. Download [`dist/attendance-reminder-1.1.0.apk`](dist/attendance-reminder-1.1.0.apk) to
+1. Download [`dist/attendance-reminder-1.2.0.apk`](dist/attendance-reminder-1.2.0.apk) to
    your Android phone (Android 8.0 or newer).
 2. Open it and allow "Install unknown apps" when asked.
 3. Open **Attendance Reminder**, allow notifications, and tap any red warning cards at the
@@ -40,11 +40,24 @@ For every class in your weekly timetable:
      allow *Autostart* / set battery to *Unrestricted*, or the system may kill reminders.
    - **Exact alarms** (Android 12 only): allow.
 4. Enter your timetable. Either:
-   - Tap **Paste timetable**, paste your schedule (copied from UNION, myUMN, a spreadsheet
+   - Tap **Import / Export → Paste timetable**, paste your schedule (copied from UNION, myUMN, a spreadsheet
      or a chat), tap **Read schedule**, check the preview, then **Replace schedule**; or
    - Tap **Add class** for each class: name, day, start time, end time.
 
    Tap a class to edit or delete it.
+
+### Import and export
+
+Under **Import / Export**:
+
+- **Export to file**: saves your schedule as a `.json` file (backup, or move it to a new
+  phone).
+- **Import from file**: opens an exported `.json` file, or any text file in one of the
+  paste formats below. You get a preview first, then choose **Replace schedule** or
+  **Add**.
+- **Share schedule**: sends it as text (WhatsApp, LINE, etc.), one class per line, e.g.
+  `Monday 08:00-10:30 Dasar Pemrograman`. A friend can paste it into
+  **Paste timetable** to copy your schedule.
 5. Tap **Test notification** to see what a reminder looks like.
 
 Optional: to get reminders even in Do Not Disturb, go to
@@ -102,6 +115,7 @@ The release build is signed with the debug key so it can be sideloaded directly.
 - `CheckInActivity.kt`: runs when you tap a reminder: marks the class as checked in and
   opens UNION.
 - `ScheduleParser.kt`: reads a pasted timetable.
+- `ScheduleFile.kt`: schedule export/import (JSON file and shareable text).
 - `BootReceiver.kt`: re-arms alarms after reboot, update or clock change.
 - `ClassStore.kt`: timetable and check-in marks (stored on the device).
 - `MainActivity.kt`: timetable editor and setup warnings.
