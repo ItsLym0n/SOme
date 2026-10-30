@@ -1,4 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.AttendanceReminder" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.AttendanceReminder" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/union_blue</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/union_blue_light</item>
+        <item name="colorOnPrimaryContainer">@color/union_blue</item>
+        <item name="colorSecondaryContainer">@color/union_blue_light</item>
+        <item name="colorOnSecondaryContainer">@color/union_blue</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="android:colorBackground">@color/union_bg</item>
+        <item name="android:windowBackground">@color/union_bg</item>
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="Union" />
+
+    <style name="Union.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/card</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">1dp</item>
+    </style>
+
+    <style name="Union.SectionTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:textColor">@color/text_title</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Union.HeaderTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="Union.Header">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/header_bg</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingBottom">24dp</item>
+    </style>
+
+    <style name="Union.Stat">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingHorizontal">12dp</item>
+    </style>
+
+    <style name="Union.StatLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">5dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/text_label</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Union.StatValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textColor">@color/text_body</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
+    <style name="Union.StatDivider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/divider</item>
+    </style>
+
+    <style name="Union.InfoRow">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingVertical">3dp</item>
+        <item name="android:textColor">@color/text_label</item>
+        <item name="android:textSize">16sp</item>
+        <item name="drawableTint">@color/union_blue</item>
+    </style>
+
+    <style name="Union.EmptyCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/card_bg</item>
+        <item name="android:padding">22dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/text_label</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Union.Tab">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="Union.TabIndicator">
+        <item name="android:layout_width">72dp</item>
+        <item name="android:layout_height">4dp</item>
+        <item name="android:layout_gravity">top|center_horizontal</item>
+        <item name="android:background">@drawable/tab_indicator</item>
+    </style>
+
+    <style name="Union.TabIcon">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
 </resources>

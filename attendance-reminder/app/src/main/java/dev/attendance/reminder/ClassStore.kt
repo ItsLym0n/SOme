@@ -61,6 +61,10 @@ class ClassStore(context: Context) {
         prefs.edit().putString(KEY_CLASSES, arr.toString()).apply()
     }
 
+    var userName: String
+        get() = prefs.getString(KEY_NAME, "").orEmpty()
+        set(value) = prefs.edit().putString(KEY_NAME, value.trim()).apply()
+
     fun isAttended(classId: String, date: LocalDate): Boolean =
         prefs.getBoolean(attendedKey(classId, date), false)
 
@@ -81,6 +85,7 @@ class ClassStore(context: Context) {
 
     private companion object {
         const val KEY_CLASSES = "classes"
+        const val KEY_NAME = "user_name"
         const val ATTENDED_PREFIX = "attended|"
     }
 }

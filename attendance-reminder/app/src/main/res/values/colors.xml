@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#1E5AA8</color>
+    <color name="ic_launcher_background">#0B5DA7</color>
+
+    <!-- Palette taken from the UNION app. -->
+    <color name="union_blue">#0B5DA7</color>
+    <color name="union_blue_light">#DCE8F5</color>
+    <color name="union_bg">#EBEFF4</color>
+    <color name="union_orange">#F49B3C</color>
+    <color name="card">#FFFFFF</color>
+    <color name="text_title">#3E444A</color>
+    <color name="text_body">#5A6169</color>
+    <color name="text_label">#6B7480</color>
+    <color name="text_dark">#22262A</color>
+    <color name="divider">#E3E7EC</color>
+    <color name="tab_inactive">#C9D0D9</color>
+    <color name="ok_green">#2E9E6A</color>
 </resources>

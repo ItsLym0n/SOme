@@ -10,15 +10,68 @@
     <string name="notif_nag_text">Class is running (%1$s–%2$s). Tap to check in on UNION.</string>
     <string name="action_open_union">Open UNION</string>
     <string name="test_class_name">Test class</string>
-
-    <string name="test_notification">Test notification</string>
-    <string name="schedule">Weekly schedule</string>
     <string name="empty">No classes yet. Tap \"Import / Export\" to paste or import your schedule, or \"Add class\" to enter one by hand.</string>
-    <string name="class_time">%1$s · %2$s–%3$s</string>
-    <string name="mark_attended">Checked in?</string>
-    <string name="attended_today">Checked in ✓</string>
-    <string name="next_reminder">Next reminder: %1$s %2$s · %3$s</string>
-    <string name="next_none">No reminders scheduled.</string>
+    <string name="mark_attended">Mark as checked in</string>
+    <string name="undo_attended">Undo check-in</string>
+
+    <string name="greeting">Hi, %1$s!</string>
+    <string name="greeting_no_name">Hi there!</string>
+    <string name="your_name">Your name</string>
+    <string name="your_name_hint">Shown on the home screen</string>
+    <string name="stat_today">Today</string>
+    <string name="stat_checked_in">Checked in</string>
+    <string name="stat_next">Next alert</string>
+    <string name="stat_none">-</string>
+    <string name="stat_checked_value">%1$d/%2$d</string>
+
+    <string name="tile_open_union">Open\nUNION</string>
+    <string name="tile_add">Add\nClass</string>
+    <string name="tile_paste">Paste\nTimetable</string>
+    <string name="tile_import">Import\nSchedule</string>
+    <string name="tile_export">Export\nSchedule</string>
+    <string name="tile_share">Share\nSchedule</string>
+    <string name="tile_test">Test\nReminder</string>
+    <string name="tile_setup">Profile &amp;\nSetup</string>
+
+    <string name="section_reminders">Reminders</string>
+    <string name="section_today">Today\'s schedule</string>
+    <string name="section_week">Weekly schedule</string>
+    <string name="section_setup">Reminder setup</string>
+    <string name="section_more">More</string>
+    <string name="today_empty">No classes today 🎉</string>
+    <string name="next_reminder">Next reminder %1$s %2$s\n%3$s</string>
+    <string name="next_none">No reminders scheduled</string>
+    <plurals name="setup_issues">
+        <item quantity="one">%1$d setting needs attention. Tap to fix.</item>
+        <item quantity="other">%1$d settings need attention. Tap to fix.</item>
+    </plurals>
+    <plurals name="week_summary">
+        <item quantity="one">%1$d class a week</item>
+        <item quantity="other">%1$d classes a week</item>
+    </plurals>
+    <string name="time_range">%1$s – %2$s</string>
+    <string name="reminder_at">Alert %1$s</string>
+    <string name="status_checked_in">Checked in</string>
+    <string name="status_not_yet">Not yet</string>
+    <string name="status_upcoming">Upcoming</string>
+    <string name="status_ended">Ended</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_schedule">Schedule</string>
+    <string name="tab_profile">Profile</string>
+
+    <string name="setup_notifications">Notifications</string>
+    <string name="setup_exact">Exact alarms</string>
+    <string name="setup_battery">Battery optimisation</string>
+    <string name="setup_union">UNION app</string>
+    <string name="setup_ok">All good</string>
+    <string name="setup_battery_ok">Not restricted</string>
+    <string name="setup_union_ok">Installed</string>
+    <string name="more_test">Send a test reminder</string>
+    <string name="more_test_sub">See what a reminder looks like</string>
+    <string name="more_channel">Reminder sound &amp; Do Not Disturb</string>
+    <string name="more_channel_sub">Change sound, vibration, DND override</string>
+    <string name="disclaimer">Not affiliated with Universitas Multimedia Nusantara.</string>
 
     <string name="add_class">Add class</string>
     <string name="edit_class">Edit class</string>
