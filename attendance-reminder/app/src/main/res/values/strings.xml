@@ -5,16 +5,15 @@
     <string name="channel_description">Class starting soon and not-yet-checked-in reminders</string>
 
     <string name="notif_before_title">%1$s starts in 15 minutes</string>
-    <string name="notif_before_text">Class %1$s–%2$s. Tap to open UNION and check in.</string>
+    <string name="notif_before_text">Class %1$s–%2$s. Tap to check in on UNION.</string>
     <string name="notif_nag_title">You haven\'t checked in to %1$s!</string>
-    <string name="notif_nag_text">Class is running (%1$s–%2$s). Tap to open UNION, then press \"I\'ve checked in\".</string>
+    <string name="notif_nag_text">Class is running (%1$s–%2$s). Tap to check in on UNION.</string>
     <string name="action_open_union">Open UNION</string>
-    <string name="action_attended">I\'ve checked in</string>
     <string name="test_class_name">Test class</string>
 
     <string name="test_notification">Test notification</string>
     <string name="schedule">Weekly schedule</string>
-    <string name="empty">No classes yet. Tap \"Add class\" to enter your timetable.</string>
+    <string name="empty">No classes yet. Tap \"Paste timetable\" to import your schedule, or \"Add class\" to enter one by hand.</string>
     <string name="class_time">%1$s · %2$s–%3$s</string>
     <string name="mark_attended">Checked in?</string>
     <string name="attended_today">Checked in ✓</string>
@@ -31,6 +30,23 @@
     <string name="delete">Delete</string>
     <string name="error_name">Enter a class name</string>
     <string name="error_time">Start and end time can\'t be the same</string>
+
+    <string name="import_timetable">Paste timetable</string>
+    <string name="import_hint">Paste your schedule here, e.g.\n\nSenin 08:00-10:30 Dasar Pemrograman\nRabu 13.00 - 15.30 Kalkulus</string>
+    <string name="import_paste_clipboard">Paste from clipboard</string>
+    <string name="import_read">Read schedule</string>
+    <string name="import_none">Couldn\'t find any classes. Each class needs a day (Senin/Monday…) and a start and end time (08:00 - 10:30).</string>
+    <plurals name="import_preview_title">
+        <item quantity="one">Found %1$d class</item>
+        <item quantity="other">Found %1$d classes</item>
+    </plurals>
+    <string name="import_skipped">\n\nSkipped (no day found):\n%1$s</string>
+    <string name="import_replace">Replace schedule</string>
+    <string name="import_add">Add</string>
+    <plurals name="import_done">
+        <item quantity="one">Imported %1$d class</item>
+        <item quantity="other">Imported %1$d classes</item>
+    </plurals>
 
     <string name="warn_notifications">Notifications are off. Tap to turn them on.</string>
     <string name="warn_exact_alarm">Exact alarms aren\'t allowed, so reminders may be late. Tap to allow.</string>

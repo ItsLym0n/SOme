@@ -3,6 +3,7 @@ package dev.attendance.reminder
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
         Notifier.createChannel(this)
 
         findViewById<View>(R.id.add_button).setOnClickListener { editClass(null) }
+        findViewById<View>(R.id.import_button).setOnClickListener { importTimetable() }
         findViewById<View>(R.id.open_union_button).setOnClickListener {
             startActivity(Notifier.unionIntent(this))
         }
@@ -244,6 +246,64 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun importTimetable() {
+        val view = layoutInflater.inflate(R.layout.dialog_import, null)
+        val input = view.findViewById<EditText>(R.id.import_input)
+        view.findViewById<View>(R.id.paste_button).setOnClickListener {
+            val clip = getSystemService(ClipboardManager::class.java).primaryClip
+            val text = clip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.coerceToText(this)
+            if (!text.isNullOrBlank()) input.setText(text)
+        }
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.import_timetable)
+            .setView(view)
+            .setPositiveButton(R.string.import_read, null)
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val result = ScheduleParser.parse(input.text.toString())
+            if (result.classes.isEmpty()) {
+                Toast.makeText(this, R.string.import_none, Toast.LENGTH_LONG).show()
+            } else {
+                dialog.dismiss()
+                confirmImport(result)
+            }
+        }
+    }
+
+    private fun confirmImport(result: ScheduleParser.Result) {
+        val preview = buildString {
+            result.classes.sortedWith(compareBy({ it.day }, { it.start })).forEach {
+                append(it.day.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
+                append("  ").append(TIME.format(it.start)).append("–").append(TIME.format(it.end))
+                append("  ").append(it.name).append('\n')
+            }
+            if (result.skipped.isNotEmpty()) {
+                append(getString(R.string.import_skipped, result.skipped.joinToString("\n")))
+            }
+        }.trimEnd()
+
+        fun save(replace: Boolean) {
+            if (replace) store.classes().forEach {
+                store.delete(it.id)
+                Notifier.cancel(this, it.id)
+            }
+            result.classes.forEach(store::save)
+            Toast.makeText(this, resources.getQuantityString(R.plurals.import_done, result.classes.size, result.classes.size), Toast.LENGTH_SHORT).show()
+            refresh()
+        }
+
+        val builder = AlertDialog.Builder(this)
+            .setTitle(resources.getQuantityString(R.plurals.import_preview_title, result.classes.size, result.classes.size))
+            .setMessage(preview)
+            .setPositiveButton(R.string.import_replace) { _, _ -> save(replace = true) }
+            .setNeutralButton(R.string.cancel, null)
+        if (store.classes().isNotEmpty()) {
+            builder.setNegativeButton(R.string.import_add) { _, _ -> save(replace = false) }
+        }
+        builder.show()
     }
 
     private companion object {

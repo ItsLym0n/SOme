@@ -36,9 +36,13 @@
             android:name=".AlarmReceiver"
             android:exported="false" />
 
-        <receiver
-            android:name=".AttendedReceiver"
-            android:exported="false" />
+        <activity
+            android:name=".CheckInActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <receiver
             android:name=".BootReceiver"

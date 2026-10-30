@@ -66,13 +66,8 @@ object Notifier {
         }
 
         val id = notificationId(r.session.id)
-        val openUnion = PendingIntent.getActivity(
-            context, id, unionIntent(context),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-        val markAttended = PendingIntent.getBroadcast(
-            context, id,
-            AttendedReceiver.intent(context, r.session.id, r.date),
+        val checkIn = PendingIntent.getActivity(
+            context, id, CheckInActivity.intent(context, r.session.id, r.date),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
@@ -85,17 +80,15 @@ object Notifier {
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .setContentIntent(openUnion)
-            // Tapping opens UNION but doesn't count as checking in, so the notification stays
-            // pinned until you press "I've checked in" or the class ends.
-            .setAutoCancel(false)
+            // Tapping opens UNION and counts as checking in for this class meeting.
+            .setContentIntent(checkIn)
+            .setAutoCancel(true)
             .setOngoing(true)
             .setOnlyAlertOnce(false)
             .setTimeoutAfter(r.classEnd - now)
             .setWhen(r.classStart)
             .setShowWhen(true)
-            .addAction(0, context.getString(R.string.action_open_union), openUnion)
-            .addAction(0, context.getString(R.string.action_attended), markAttended)
+            .addAction(0, context.getString(R.string.action_open_union), checkIn)
             .build()
 
         try {
@@ -136,7 +129,7 @@ object Notifier {
             context,
             Scheduler.Reminder(
                 at = now,
-                session = ClassSession(id = "test", name = context.getString(R.string.test_class_name),
+                session = ClassSession(id = CheckInActivity.TEST_ID, name = context.getString(R.string.test_class_name),
                     day = LocalDate.now().dayOfWeek,
                     start = java.time.LocalTime.now().plusMinutes(15),
                     end = java.time.LocalTime.now().plusMinutes(17)),
