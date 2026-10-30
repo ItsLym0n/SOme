@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Attendance Reminder</string>
+    <string name="channel_name">Attendance reminders</string>
+    <string name="channel_description">Class starting soon and not-yet-checked-in reminders</string>
+
+    <string name="notif_before_title">%1$s starts in 15 minutes</string>
+    <string name="notif_before_text">Class %1$s–%2$s. Tap to open UNION and check in.</string>
+    <string name="notif_nag_title">You haven\'t checked in to %1$s!</string>
+    <string name="notif_nag_text">Class is running (%1$s–%2$s). Tap to open UNION, then press \"I\'ve checked in\".</string>
+    <string name="action_open_union">Open UNION</string>
+    <string name="action_attended">I\'ve checked in</string>
+    <string name="test_class_name">Test class</string>
+
+    <string name="test_notification">Test notification</string>
+    <string name="schedule">Weekly schedule</string>
+    <string name="empty">No classes yet. Tap \"Add class\" to enter your timetable.</string>
+    <string name="class_time">%1$s · %2$s–%3$s</string>
+    <string name="mark_attended">Checked in?</string>
+    <string name="attended_today">Checked in ✓</string>
+    <string name="next_reminder">Next reminder: %1$s %2$s · %3$s</string>
+    <string name="next_none">No reminders scheduled.</string>
+
+    <string name="add_class">Add class</string>
+    <string name="edit_class">Edit class</string>
+    <string name="class_name_hint">Class name (e.g. Calculus A)</string>
+    <string name="starts_at">Starts at %1$s</string>
+    <string name="ends_at">Ends at %1$s</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="error_name">Enter a class name</string>
+    <string name="error_time">Start and end time can\'t be the same</string>
+
+    <string name="warn_notifications">Notifications are off. Tap to turn them on.</string>
+    <string name="warn_exact_alarm">Exact alarms aren\'t allowed, so reminders may be late. Tap to allow.</string>
+    <string name="warn_battery">Battery optimisation can delay or block reminders. Tap to exempt this app.</string>
+    <string name="warn_union_missing">UNION isn\'t installed. Tap to get it from the Play Store.</string>
+</resources>
