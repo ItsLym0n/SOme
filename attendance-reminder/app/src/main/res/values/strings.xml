@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Attendance Reminder</string>
+    <string name="app_name">RE-Union</string>
     <string name="channel_name">Attendance reminders</string>
     <string name="channel_description">Class starting soon and not-yet-checked-in reminders</string>
 

@@ -1,4 +1,6 @@
-# Attendance Reminder
+# RE-Union
+
+Attendance reminders for **UNION – UMN Companion**: never forget to check in to class.
 
 A small Android app that makes sure you never forget to check in on
 **UNION – UMN Companion** (`umn.union`).
@@ -40,10 +42,10 @@ For every class in your weekly timetable:
 
 ## Install
 
-1. Download [`dist/attendance-reminder-1.3.0.apk`](dist/attendance-reminder-1.3.0.apk) to
+1. Download [`dist/re-union-1.3.1.apk`](dist/re-union-1.3.1.apk) to
    your Android phone (Android 8.0 or newer).
 2. Open it and allow "Install unknown apps" when asked.
-3. Open **Attendance Reminder** and allow notifications. Tap your greeting to set your
+3. Open **RE-Union** and allow notifications. Tap your greeting to set your
    name. If the home screen says settings need attention, tap it: the **Profile** tab lists
    each one, and tapping it takes you to the right setting:
    - **Battery optimisation**: exempt the app. On Xiaomi/Oppo/Vivo/Samsung phones, also
@@ -71,7 +73,7 @@ From the home tiles, or **Import / Export** on the Schedule tab:
 5. Tap the **Test Reminder** tile to see what a reminder looks like.
 
 Optional: to get reminders even in Do Not Disturb, go to
-*Settings → Notifications → Do Not Disturb → Apps* and add Attendance Reminder.
+*Settings → Notifications → Do Not Disturb → Apps* and add RE-Union.
 
 ### Paste formats
 
